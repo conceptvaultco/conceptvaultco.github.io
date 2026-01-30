@@ -1,0 +1,2362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ConceptVaults</title>
+
+  <style>
+    :root{
+      --bg:#fbfaf6; --panel:#fffef9; --panel2:#ffffff;
+      --soft:#f4f2eb; --ink:#141414; --muted:#5b5b5b;
+      --line:#e3e0d8; --accent:#1b5cff; --danger:#8a1b2b;
+
+      --shadow:0 30px 80px rgba(0,0,0,.12);
+      --radius:16px;
+
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      --serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+      --glassBlur: 18px;
+      --glassSat: 1.25;
+      --glassBorder: rgba(255,255,255,.18);
+      --glassShine: rgba(255,255,255,.12);
+      --glassShadow: 0 40px 120px rgba(0,0,0,.25);
+    }
+
+    body.theme-paper-light{
+      --bg:#fbfaf6; --panel:#fffef9; --panel2:#ffffff;
+      --soft:#f4f2eb; --ink:#141414; --muted:#5b5b5b;
+      --line:#e3e0d8; --accent:#1b5cff; --danger:#8a1b2b;
+      --shadow:0 26px 70px rgba(0,0,0,.10);
+    }
+    body.theme-paper-dark{
+      --bg:#0d0f14; --panel:#12151d; --panel2:#0f1219;
+      --soft:rgba(255,255,255,.06); --ink:#e9eefc; --muted:rgba(233,238,252,.65);
+      --line:rgba(233,238,252,.10); --accent:#7aa2ff; --danger:#ff6b86;
+      --shadow:0 40px 110px rgba(0,0,0,.48);
+    }
+    body.theme-kindle-light{
+      --bg:#f7f1e3; --panel:#fbf6ea; --panel2:#fffaf0;
+      --soft:#efe7d6; --ink:#1b1b18; --muted:#5b564b;
+      --line:#e2d8c2; --accent:#2b5dff; --danger:#8a2a2a;
+      --shadow:0 24px 60px rgba(0,0,0,.10);
+    }
+    body.theme-kindle-dark{
+      --bg:#0f1210; --panel:#141a16; --panel2:#111613;
+      --soft:rgba(255,255,255,.06); --ink:#e8f0e7; --muted:rgba(232,240,231,.65);
+      --line:rgba(232,240,231,.12); --accent:#86a7ff; --danger:#ff7887;
+      --shadow:0 44px 120px rgba(0,0,0,.55);
+    }
+    body.theme-glass-light{
+      --bg:#eef3ff;
+      --panel: rgba(255,255,255,.44);
+      --panel2: rgba(255,255,255,.62);
+      --soft: rgba(255,255,255,.32);
+      --ink:#0e1322; --muted:rgba(14,19,34,.62);
+      --line: rgba(14,19,34,.14);
+      --accent:#2b6bff; --danger:#b0273c;
+
+      --glassBorder: rgba(255,255,255,.26);
+      --glassShine: rgba(255,255,255,.18);
+      --glassShadow: 0 50px 150px rgba(12,18,40,.22);
+      --shadow: var(--glassShadow);
+    }
+    body.theme-glass-dark{
+      --bg:#0a0f1f;
+      --panel: rgba(18,24,42,.46);
+      --panel2: rgba(18,24,42,.62);
+      --soft: rgba(255,255,255,.06);
+      --ink:#eef2ff; --muted:rgba(238,242,255,.62);
+      --line: rgba(238,242,255,.14);
+      --accent:#7aa2ff; --danger:#ff6b86;
+
+      --glassBorder: rgba(255,255,255,.12);
+      --glassShine: rgba(255,255,255,.10);
+      --glassShadow: 0 55px 160px rgba(0,0,0,.62);
+      --shadow: var(--glassShadow);
+    }
+
+    *{ box-sizing:border-box }
+    body{
+      margin:0; min-height:100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body[class*="theme-glass-"]::before{
+      content:"";
+      position:fixed; inset:-200px;
+      background:
+        radial-gradient(800px 600px at 15% 10%, rgba(43,107,255,.22), transparent 60%),
+        radial-gradient(700px 520px at 80% 25%, rgba(122,162,255,.18), transparent 60%),
+        radial-gradient(900px 700px at 40% 85%, rgba(255,107,134,.12), transparent 60%);
+      filter: blur(10px);
+      pointer-events:none;
+      z-index:-1;
+    }
+
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      border-bottom:1px solid var(--line);
+      background: color-mix(in oklab, var(--bg) 92%, transparent);
+    }
+    body[class*="theme-glass-"] .topbar{
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      background: color-mix(in oklab, var(--bg) 50%, transparent);
+    }
+
+    .topbarInner{
+      max-width:1500px;
+      margin:0 auto;
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .brand{ display:flex; align-items:baseline; gap:10px; min-width:220px; }
+    .brand b{ font-family: var(--serif); font-weight:950; letter-spacing:.2px; cursor:pointer; }
+    .brand span{ color:var(--muted); font-size:12px; }
+
+    .search{
+      flex:1;
+      display:flex; align-items:center; gap:10px;
+      border:1px solid var(--line);
+      background: var(--soft);
+      border-radius: 999px;
+      padding:8px 12px;
+      max-width: 720px;
+    }
+    body[class*="theme-glass-"] .search{
+      background: color-mix(in oklab, var(--panel2) 75%, transparent);
+      border-color: var(--glassBorder);
+      box-shadow: 0 10px 30px rgba(0,0,0,.10);
+    }
+    .search input{
+      width:100%;
+      border:0; outline:none;
+      background:transparent;
+      color:var(--ink);
+      font-size:13px;
+    }
+
+    .menus{ display:flex; gap:8px; align-items:center; justify-content:flex-end; flex-wrap:wrap; }
+
+    .btn{
+      border:1px solid var(--line);
+      background: var(--soft);
+      color: var(--ink);
+      padding:8px 10px;
+      border-radius: 999px;
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    body[class*="theme-glass-"] .btn{
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+      border-color: var(--glassBorder);
+      box-shadow: 0 10px 30px rgba(0,0,0,.10);
+    }
+    .btn:hover{ border-color: color-mix(in oklab, var(--line) 55%, var(--ink)); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      border-color: color-mix(in oklab, var(--accent) 35%, var(--line));
+      background: color-mix(in oklab, var(--accent) 16%, transparent);
+      color: color-mix(in oklab, var(--accent) 85%, var(--ink));
+    }
+    .btn.danger{
+      border-color: color-mix(in oklab, var(--danger) 30%, var(--line));
+      background: color-mix(in oklab, var(--danger) 10%, transparent);
+      color: var(--danger);
+    }
+
+    .menuWrap{ position:relative; }
+    .menuBtn{ display:flex; align-items:center; gap:8px; padding:8px 12px; }
+    .caret{ font-family: var(--mono); color: var(--muted); font-size:12px; }
+
+    .menu{
+      position:absolute;
+      top: calc(100% + 8px);
+      right:0;
+      min-width: 230px;
+      border:1px solid var(--line);
+      background: var(--panel2);
+      border-radius: 14px;
+      padding:6px;
+      box-shadow: var(--shadow);
+      display:none;
+      z-index:80;
+    }
+    body[class*="theme-glass-"] .menu{
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+      border-color: var(--glassBorder);
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      box-shadow: var(--glassShadow);
+    }
+
+    .menuItem{
+      width:100%;
+      border:1px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      padding:10px 10px;
+      border-radius: 12px;
+      cursor:pointer;
+      text-align:left;
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+    }
+    .menuItem:hover{
+      background: var(--soft);
+      border-color: var(--line);
+    }
+    body[class*="theme-glass-"] .menuItem:hover{
+      background: color-mix(in oklab, var(--glassShine) 80%, transparent);
+      border-color: var(--glassBorder);
+    }
+    .kbd{
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      border:1px solid var(--line);
+      background: var(--soft);
+      border-radius: 8px;
+      padding:2px 6px;
+    }
+    body[class*="theme-glass-"] .kbd{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+    }
+    .sepLine{ height:1px; background: var(--line); margin:6px 6px; opacity:.9; }
+
+    .pill{
+      font-size:11px;
+      border:1px solid var(--line);
+      background: var(--soft);
+      border-radius:999px;
+      padding:4px 8px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    body[class*="theme-glass-"] .pill{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+    }
+    .tiny{ color:var(--muted); font-size:11px; }
+
+    /* App layout */
+    .wrap{
+      max-width:1500px;
+      margin:0 auto;
+      padding:14px;
+      display:grid;
+      grid-template-columns: 320px 380px 1fr;
+      gap:14px;
+      min-height: calc(100vh - 64px);
+    }
+
+    .pane{
+      border:1px solid var(--line);
+      background: var(--panel);
+      border-radius: var(--radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 360px;
+      box-shadow: var(--shadow);
+      position:relative;
+    }
+    body[class*="theme-glass-"] .pane{
+      background: color-mix(in oklab, var(--panel) 75%, transparent);
+      border-color: var(--glassBorder);
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      box-shadow: var(--glassShadow);
+    }
+    body[class*="theme-glass-"] .pane::before{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.14), transparent 35%),
+        radial-gradient(900px 140px at 20% 0%, rgba(255,255,255,.16), transparent 60%);
+      opacity:.9;
+    }
+
+    .paneHead{
+      padding:12px 12px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background: color-mix(in oklab, var(--panel) 75%, var(--panel2));
+      position:relative;
+      z-index:1;
+    }
+    body[class*="theme-glass-"] .paneHead{
+      background: color-mix(in oklab, var(--panel2) 45%, transparent);
+      border-bottom-color: var(--glassBorder);
+    }
+
+    .paneTitle{
+      font-family:var(--serif);
+      font-weight:950;
+      font-size:13px;
+      letter-spacing:.1px;
+    }
+    .paneBody{ padding:8px; overflow:auto; flex:1; position:relative; z-index:1; }
+    .toolbar{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:10px 12px;
+      border-top:1px solid var(--line);
+      background: color-mix(in oklab, var(--soft) 70%, transparent);
+      position:relative;
+      z-index:1;
+      align-items:center;
+      justify-content:flex-start;
+    }
+    body[class*="theme-glass-"] .toolbar{
+      border-top-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 35%, transparent);
+    }
+    .toolbar .btn{ font-size:11px; padding:7px 10px; }
+
+    .rowItem{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:9px 10px;
+      border-radius: 12px;
+      cursor:pointer;
+      border:1px solid transparent;
+    }
+    .rowItem:hover{ background: var(--soft); border-color: var(--line); }
+    body[class*="theme-glass-"] .rowItem:hover{
+      background: color-mix(in oklab, var(--glassShine) 80%, transparent);
+      border-color: var(--glassBorder);
+    }
+    .rowItem.active{
+      background: color-mix(in oklab, var(--accent) 16%, transparent);
+      border-color: color-mix(in oklab, var(--accent) 28%, var(--line));
+    }
+    body[class*="theme-glass-"] .rowItem.active{
+      border-color: color-mix(in oklab, var(--accent) 30%, var(--glassBorder));
+    }
+
+    .rowLeft{ min-width:0; display:flex; flex-direction:column; gap:2px; }
+    .rowName{
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .rowMeta{
+      font-size:11px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .icon{
+      width:18px; height:18px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-family: var(--mono);
+      font-size: 12px;
+      border:1px solid var(--line);
+      background: var(--panel2);
+      border-radius: 6px;
+      color: var(--muted);
+      flex: 0 0 auto;
+    }
+    body[class*="theme-glass-"] .icon{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+    }
+
+    .treeRow{
+      display:flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius: 12px;
+      cursor:pointer;
+      border:1px solid transparent;
+      user-select:none;
+    }
+    .treeRow:hover{ background: var(--soft); border-color: var(--line); }
+    body[class*="theme-glass-"] .treeRow:hover{
+      background: color-mix(in oklab, var(--glassShine) 80%, transparent);
+      border-color: var(--glassBorder);
+    }
+    .treeRow.active{
+      background: color-mix(in oklab, var(--accent) 16%, transparent);
+      border-color: color-mix(in oklab, var(--accent) 28%, var(--line));
+    }
+    body[class*="theme-glass-"] .treeRow.active{
+      border-color: color-mix(in oklab, var(--accent) 30%, var(--glassBorder));
+    }
+
+    .treeRow .label{
+      min-width:0;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      font-size:13px;
+    }
+    .treeRow .count{
+      margin-left:auto;
+      font-size:11px;
+      color:var(--muted);
+      border:1px solid var(--line);
+      background: var(--soft);
+      border-radius:999px;
+      padding:3px 7px;
+      flex:0 0 auto;
+    }
+    body[class*="theme-glass-"] .treeRow .count{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+    }
+
+    .twisty{
+      width:18px; height:18px;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-family: var(--mono);
+      color: var(--muted);
+      flex:0 0 auto;
+    }
+    .indent{ width: var(--w, 0px); flex:0 0 auto; }
+
+    .previewHead{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      background: color-mix(in oklab, var(--panel) 75%, var(--panel2));
+      position:relative;
+      z-index:1;
+    }
+    body[class*="theme-glass-"] .previewHead{
+      background: color-mix(in oklab, var(--panel2) 45%, transparent);
+      border-bottom-color: var(--glassBorder);
+    }
+
+    .crumbs{
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .crumbs .sep{ color: color-mix(in oklab, var(--muted) 35%, transparent); }
+    .pageTitle{
+      font-family:var(--serif);
+      font-weight:950;
+      font-size:18px;
+      margin:0;
+      line-height:1.15;
+    }
+    .pageMeta{
+      margin-top:6px;
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .pageMeta .k{
+      font-family: var(--mono);
+      font-size:11px;
+      padding:2px 6px;
+      border:1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      color: var(--muted);
+    }
+    body[class*="theme-glass-"] .pageMeta .k{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+    }
+    .pageBody{ padding:14px; overflow:auto; flex:1; position:relative; z-index:1; }
+
+    .field{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding:12px;
+      background: var(--panel2);
+    }
+    body[class*="theme-glass-"] .field{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+      box-shadow: 0 18px 60px rgba(0,0,0,.12);
+    }
+
+    .labelUp{
+      font-size:11px;
+      color:var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom:8px;
+    }
+    textarea, input[type="text"], select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius: 12px;
+      padding:10px 10px;
+      outline:none;
+      font-size:13px;
+      background: color-mix(in oklab, var(--panel2) 85%, var(--bg));
+      color: var(--ink);
+      font-family: var(--sans);
+    }
+    body[class*="theme-glass-"] textarea,
+    body[class*="theme-glass-"] input[type="text"],
+    body[class*="theme-glass-"] select{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 55%, transparent);
+    }
+
+    textarea{ min-height: 160px; resize: vertical; line-height:1.55; }
+    select{ cursor:pointer; }
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .docPage{ max-width: 980px; margin: 0 auto; }
+    .hint{ font-size:12px; color:var(--muted); line-height:1.55; }
+
+    pre{
+      background: color-mix(in oklab, var(--panel2) 80%, #000);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      overflow:auto;
+      color: var(--ink);
+    }
+    body[class*="theme-glass-"] pre{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 55%, transparent);
+    }
+    code{ font-family: var(--mono); font-size: 12.5px; }
+
+    .modalBack{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:90;
+    }
+    .modal{
+      width:min(860px, 100%);
+      background: var(--bg);
+      border:1px solid var(--line);
+      border-radius: 18px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    body[class*="theme-glass-"] .modal{
+      background: color-mix(in oklab, var(--panel2) 50%, transparent);
+      border-color: var(--glassBorder);
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      box-shadow: var(--glassShadow);
+    }
+    .modalHead{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      background: color-mix(in oklab, var(--bg) 85%, var(--panel));
+    }
+    body[class*="theme-glass-"] .modalHead{
+      border-bottom-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 40%, transparent);
+    }
+    .modalHead b{ font-family: var(--serif); font-weight: 950; }
+    .modalBody{ padding:14px; font-size:13px; line-height:1.55; }
+    .modalGrid{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .modalCard{
+      border:1px solid var(--line);
+      background: var(--panel);
+      border-radius: 14px;
+      padding:12px;
+    }
+    body[class*="theme-glass-"] .modalCard{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 55%, transparent);
+    }
+
+    /* Right-click context menu */
+    .ctx{
+      position:fixed;
+      min-width: 220px;
+      border:1px solid var(--line);
+      background: var(--panel2);
+      border-radius: 14px;
+      padding:6px;
+      box-shadow: var(--shadow);
+      display:none;
+      z-index:120;
+    }
+    body[class*="theme-glass-"] .ctx{
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+      border-color: var(--glassBorder);
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      box-shadow: var(--glassShadow);
+    }
+    .ctx .menuItem{ padding:10px 10px; border-radius: 12px; }
+
+    /* Landing */
+    .landing{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 14px 40px;
+    }
+    .hero{
+      border:1px solid var(--line);
+      background: var(--panel);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    body[class*="theme-glass-"] .hero{
+      background: color-mix(in oklab, var(--panel) 75%, transparent);
+      border-color: var(--glassBorder);
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      box-shadow: var(--glassShadow);
+    }
+    .hero h1{
+      font-family: var(--serif);
+      font-weight: 950;
+      font-size: 30px;
+      margin: 0 0 8px;
+      line-height: 1.15;
+    }
+    .hero p{ margin:0; color:var(--muted); font-size:13px; line-height:1.6; max-width: 70ch; }
+    .heroRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top: 14px;
+    }
+    .cards{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .card{
+      border:1px solid var(--line);
+      background: var(--panel2);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.08);
+    }
+    body[class*="theme-glass-"] .card{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 65%, transparent);
+      box-shadow: 0 18px 60px rgba(0,0,0,.16);
+    }
+    .card b{
+      font-family: var(--serif);
+      font-weight: 950;
+      display:block;
+      margin-bottom: 6px;
+    }
+    .card .tiny{ margin-top:6px; }
+    .steps{
+      margin-top: 14px;
+      border:1px solid var(--line);
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.08);
+    }
+    body[class*="theme-glass-"] .steps{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 55%, transparent);
+    }
+    .steps ol{ margin: 8px 0 0 18px; color:var(--muted); line-height:1.7; font-size:13px; }
+    .steps li{ margin-bottom: 6px; }
+    .miniHint{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .hidden{ display:none !important; }
+
+    @media (max-width: 1100px){
+      .wrap{ grid-template-columns: 1fr; }
+      .brand{ min-width:unset; }
+      .cards{ grid-template-columns: 1fr; }
+    }
+
+    @media print{
+      .topbar, .noPrint, .ctx, .modalBack, #landingView{ display:none !important; }
+      body{ background:#fff !important; color:#000 !important; }
+      .wrap{ grid-template-columns: 1fr !important; max-width:none !important; padding:0 !important; }
+      .pane:nth-child(1), .pane:nth-child(2){ display:none !important; }
+      .pane{ border:none !important; border-radius:0 !important; box-shadow:none !important; }
+      textarea, input[type="text"], select{ border:1px solid #ddd !important; background:#fff !important; color:#000 !important; }
+      .field{ border:1px solid #ddd !important; background:#fff !important; }
+      pre{ background:#f5f5f5 !important; color:#000 !important; border:1px solid #ddd !important; }
+    }
+  </style>
+</head>
+
+<body class="theme-paper-light">
+
+  <div class="topbar noPrint">
+    <div class="topbarInner">
+      <div class="brand" id="brandHome" title="Go to landing">
+        <b>ConceptVaults</b>
+        <span id="viewBadge">landing</span>
+      </div>
+
+      <div class="search" id="searchWrap">
+        <span style="color:var(--muted); font-size:12px;">⌕</span>
+        <input id="q" placeholder="Search files…" />
+      </div>
+
+      <div class="menus">
+        <button class="btn" id="goLandingBtn">Home</button>
+        <button class="btn primary" id="goVaultBtn">Vault</button>
+
+        <div class="menuWrap">
+          <button class="btn menuBtn" data-menu="menuNew">New <span class="caret">▾</span></button>
+          <div class="menu" id="menuNew">
+            <button class="menuItem" id="newPopupBtn">New… <span class="kbd">Ctrl N</span></button>
+          </div>
+        </div>
+
+        <div class="menuWrap">
+          <button class="btn menuBtn" data-menu="menuImport">Import <span class="caret">▾</span></button>
+          <div class="menu" id="menuImport">
+            <button class="menuItem" id="importPdfBtn">PDF(s)</button>
+            <button class="menuItem" id="importFolderBtn">Folder (PDFs)</button>
+            <div class="sepLine"></div>
+            <button class="menuItem" id="importVaultBtn">Vault JSON</button>
+          </div>
+        </div>
+
+        <div class="menuWrap">
+          <button class="btn menuBtn" data-menu="menuExport">Export <span class="caret">▾</span></button>
+          <div class="menu" id="menuExport">
+            <button class="menuItem" id="exportBtn">Current file → PDF <span class="kbd">P</span></button>
+            <div class="sepLine"></div>
+            <button class="menuItem" id="exportVaultBtn">Vault JSON</button>
+          </div>
+        </div>
+
+        <div class="menuWrap">
+          <button class="btn menuBtn" data-menu="menuView">View <span class="caret">▾</span></button>
+          <div class="menu" id="menuView">
+            <button class="menuItem" id="openBtn">Open selected <span class="kbd">↵</span></button>
+            <button class="menuItem" id="saveBtn">Save <span class="kbd">Ctrl S</span></button>
+          </div>
+        </div>
+
+        <!-- Settings is now a standalone button -->
+        <button class="btn" id="settingsTopBtn">Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Landing Page -->
+   
+.landingFull{
+  min-height: calc(100vh - 64px);
+  display:flex;
+  flex-direction:column;
+  padding: 0;
+}
+
+.landingHeader{
+  padding: 22px 16px 6px;
+  max-width: 1100px;
+  width:100%;
+  margin:0 auto;
+}
+
+.landingBrand{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.landingMark{
+  font-family: var(--serif);
+  font-weight: 950;
+  font-size: 22px;
+  letter-spacing:.2px;
+}
+
+.landingSub{
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 80ch;
+}
+
+.landingMain{
+  max-width: 1100px;
+  width:100%;
+  margin:0 auto;
+  padding: 10px 16px 18px;
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
+  flex:1;
+}
+
+.landingCenter{
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+
+.landingTitle{
+  font-family: var(--serif);
+  font-weight: 950;
+  font-size: 34px;
+  line-height: 1.1;
+  margin: 0 0 10px;
+}
+
+.landingLead{
+  margin:0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.75;
+  max-width: 78ch;
+}
+
+.landingCTA{
+  margin-top: 14px;
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  align-items:flex-start;
+}
+
+.landingGetStarted{
+  padding: 12px 16px;
+  font-size: 13px;
+  border-radius: 999px;
+}
+
+.landingHint{
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.landingGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.landingCard{
+  border:1px solid var(--line);
+  background: var(--panel);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.06);
+}
+
+body[class*="theme-glass-"] .landingCard{
+  background: color-mix(in oklab, var(--panel2) 55%, transparent);
+  border-color: var(--glassBorder);
+  backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+  -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+  box-shadow: var(--glassShadow);
+}
+
+.landingCard b{
+  font-family: var(--serif);
+  font-weight: 950;
+  display:block;
+  margin-bottom: 6px;
+}
+
+.landingSteps{
+  margin-top: 2px;
+  border:1px solid var(--line);
+  background: var(--panel);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.06);
+}
+
+body[class*="theme-glass-"] .landingSteps{
+  background: color-mix(in oklab, var(--panel2) 55%, transparent);
+  border-color: var(--glassBorder);
+  backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+  -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+  box-shadow: var(--glassShadow);
+}
+
+.landingSteps b{
+  font-family: var(--serif);
+  font-weight: 950;
+}
+
+.landingSteps ol{
+  margin: 8px 0 0 18px;
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 13px;
+}
+
+.landingFooter{
+  max-width: 1100px;
+  width:100%;
+  margin: 0 auto;
+  padding: 0 16px 18px;
+  display:flex;
+  gap: 8px;
+  flex-wrap:wrap;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
+@media (max-width: 980px){
+  .landingGrid{ grid-template-columns: 1fr; }
+  .landingTitle{ font-size: 28px; }
+}
+
+  <!-- Vault App -->
+  <div id="vaultView" class="wrap hidden">
+    <!-- Folders -->
+    <div class="pane">
+      <div class="paneHead">
+        <div>
+          <div class="paneTitle">Folders</div>
+          <div class="tiny" id="foldersTiny">—</div>
+        </div>
+        <span class="pill" id="counts">0</span>
+      </div>
+      <div class="paneBody" id="folderTree"></div>
+      <div class="toolbar noPrint">
+        <button class="btn primary" id="addFolderBtn">+ Folder</button>
+        <button class="btn" id="addSubFolderBtn">+ Subfolder</button>
+        <span style="flex:1"></span>
+        <button class="btn" id="renameFolderBtn">Rename</button>
+        <button class="btn danger" id="deleteFolderBtn">Delete</button>
+      </div>
+    </div>
+
+    <!-- Files -->
+    <div class="pane">
+      <div class="paneHead">
+        <div>
+          <div class="paneTitle">Files</div>
+          <div class="tiny" id="filesTiny">—</div>
+        </div>
+        <span class="pill" id="fileCount">0</span>
+      </div>
+      <div class="paneBody" id="fileList"></div>
+      <div class="toolbar noPrint">
+        <button class="btn primary" id="addFileBtn">+ New…</button>
+        <span style="flex:1"></span>
+        <button class="btn" id="renameFileBtn">Rename</button>
+        <button class="btn" id="duplicateBtn">Duplicate</button>
+        <button class="btn danger" id="deleteBtn">Delete</button>
+      </div>
+    </div>
+
+    <!-- Preview / Editor -->
+    <div class="pane">
+      <div class="previewHead">
+        <div style="min-width:0;">
+          <div class="crumbs" id="crumbs"></div>
+          <p class="pageTitle" id="pageTitle">Select a file</p>
+          <div class="pageMeta" id="pageMeta"></div>
+        </div>
+        <div class="noPrint" style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn primary" id="saveBtn2">Save</button>
+        </div>
+      </div>
+      <div class="pageBody" id="pageBody">
+        <div class="hint">Pick a folder → pick a file → View → Open (or double-click). Right-click folders/files for more.</div>
+      </div>
+      <div class="toolbar noPrint" style="justify-content:space-between;">
+        <div class="tiny">
+          Keybinds:
+          <span class="pill" style="font-family:var(--mono);">Ctrl+N</span> New…
+          • <span class="pill" style="font-family:var(--mono);">Ctrl+Shift+F</span> Folder
+          • <span class="pill" style="font-family:var(--mono);">Ctrl+S</span> Save
+        </div>
+        <div class="tiny" id="dirtyMark"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- inputs -->
+  <input id="pdfInput" type="file" accept="application/pdf" multiple hidden />
+  <input id="folderInput" type="file" accept="application/pdf" multiple webkitdirectory directory hidden />
+  <input id="vaultJsonInput" type="file" accept="application/json" hidden />
+
+  <!-- Settings -->
+  <div class="modalBack" id="settingsBack">
+    <div class="modal">
+      <div class="modalHead">
+        <b>Settings</b>
+        <button class="btn" id="closeSettings">Close</button>
+      </div>
+      <div class="modalBody">
+        <div class="modalGrid">
+          <div class="modalCard">
+            <div style="font-family:var(--serif); font-weight:950; margin-bottom:6px;">Theme</div>
+            <div class="tiny">Paper / Kindle / Apple Glass (each with dark mode).</div>
+            <div style="margin-top:10px;">
+              <div class="labelUp">Theme</div>
+              <select id="themeSelect">
+                <option value="paper-light">Paper (Light)</option>
+                <option value="paper-dark">Paper (Dark)</option>
+                <option value="kindle-light">Kindle (Light)</option>
+                <option value="kindle-dark">Kindle (Dark)</option>
+                <option value="glass-light">Apple Glass (Light)</option>
+                <option value="glass-dark">Apple Glass (Dark)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modalCard">
+            <div style="font-family:var(--serif); font-weight:950; margin-bottom:6px;">Vault JSON</div>
+            <div class="tiny">Exports folders + files + settings. PDFs are stored locally (IndexedDB) and are referenced.</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+              <button class="btn" id="exportVaultBtn2">Export Vault JSON</button>
+              <button class="btn" id="importVaultBtn2">Import Vault JSON</button>
+            </div>
+            <div class="hint" style="margin-top:10px;">
+              If a PDF says “missing” after import, re-import that PDF file.
+            </div>
+          </div>
+        </div>
+
+        <div class="modalCard" style="margin-top:12px;">
+          <div style="font-family:var(--serif); font-weight:950; margin-bottom:6px;">Danger Zone</div>
+          <div class="tiny">Wipes all local ConceptVaults data.</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+            <button class="btn danger" id="wipeBtn">Wipe all local data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New… popup -->
+  <div class="modalBack" id="newBack">
+    <div class="modal" style="width:min(760px,100%);">
+      <div class="modalHead">
+        <b>New…</b>
+        <button class="btn" id="closeNew">Close</button>
+      </div>
+      <div class="modalBody">
+        <div class="hint">Choose what you want to create.</div>
+        <div class="modalGrid" style="margin-top:12px;">
+          <div class="modalCard">
+            <div style="font-family:var(--serif); font-weight:950; margin-bottom:6px;">Files</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+              <button class="btn primary" id="newConceptBtn">+ Concept</button>
+              <button class="btn" id="newNoteBtn">+ Note</button>
+              <button class="btn" id="newJsonBtn">+ JSON</button>
+            </div>
+            <div class="hint" style="margin-top:10px;">Concept = structured idea sheet. Note = free text. JSON = templates/checklists.</div>
+          </div>
+          <div class="modalCard">
+            <div style="font-family:var(--serif); font-weight:950; margin-bottom:6px;">Folders</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+              <button class="btn primary" id="newFolderBtn">+ Folder</button>
+              <button class="btn" id="newSubFolderBtn">+ Subfolder</button>
+            </div>
+            <div class="hint" style="margin-top:10px;">Folder creates at root. Subfolder creates inside the selected folder.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right-click context menu -->
+  <div class="ctx" id="ctxMenu"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const LS_KEY = "conceptvaults_v5_landing_settings_button";
+  const DB_NAME = "conceptvaults_pdfs";
+  const DB_STORE = "pdfs";
+
+  const $ = (id)=>document.getElementById(id);
+
+  const ui = {
+    // nav/views
+    landingView: $("landingView"),
+    vaultView: $("vaultView"),
+    viewBadge: $("viewBadge"),
+    brandHome: $("brandHome"),
+    goLandingBtn: $("goLandingBtn"),
+    goVaultBtn: $("goVaultBtn"),
+    startBtn: $("startBtn"),
+    openSettingsBtn: $("openSettingsBtn"),
+
+    // top buttons
+    settingsTopBtn: $("settingsTopBtn"),
+
+    q: $("q"),
+    searchWrap: $("searchWrap"),
+
+    folderTree: $("folderTree"),
+    fileList: $("fileList"),
+    counts: $("counts"),
+    foldersTiny: $("foldersTiny"),
+    filesTiny: $("filesTiny"),
+    fileCount: $("fileCount"),
+
+    crumbs: $("crumbs"),
+    pageTitle: $("pageTitle"),
+    pageMeta: $("pageMeta"),
+    pageBody: $("pageBody"),
+    dirtyMark: $("dirtyMark"),
+
+    settingsBack: $("settingsBack"),
+    closeSettings: $("closeSettings"),
+    themeSelect: $("themeSelect"),
+    wipeBtn: $("wipeBtn"),
+
+    addFolderBtn: $("addFolderBtn"),
+    addSubFolderBtn: $("addSubFolderBtn"),
+    renameFolderBtn: $("renameFolderBtn"),
+    deleteFolderBtn: $("deleteFolderBtn"),
+
+    addFileBtn: $("addFileBtn"),
+    renameFileBtn: $("renameFileBtn"),
+    duplicateBtn: $("duplicateBtn"),
+    deleteBtn: $("deleteBtn"),
+
+    newPopupBtn: $("newPopupBtn"),
+    newBack: $("newBack"),
+    closeNew: $("closeNew"),
+    newConceptBtn: $("newConceptBtn"),
+    newNoteBtn: $("newNoteBtn"),
+    newJsonBtn: $("newJsonBtn"),
+    newFolderBtn: $("newFolderBtn"),
+    newSubFolderBtn: $("newSubFolderBtn"),
+
+    importPdfBtn: $("importPdfBtn"),
+    importFolderBtn: $("importFolderBtn"),
+    exportBtn: $("exportBtn"),
+
+    importVaultBtn: $("importVaultBtn"),
+    exportVaultBtn: $("exportVaultBtn"),
+    importVaultBtn2: $("importVaultBtn2"),
+    exportVaultBtn2: $("exportVaultBtn2"),
+
+    openBtn: $("openBtn"),
+    saveBtn: $("saveBtn"),
+    saveBtn2: $("saveBtn2"),
+
+    pdfInput: $("pdfInput"),
+    folderInput: $("folderInput"),
+    vaultJsonInput: $("vaultJsonInput"),
+
+    ctxMenu: $("ctxMenu"),
+  };
+
+  function uid(prefix="id"){
+    return prefix + "_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
+  }
+  function now(){ return new Date().toISOString(); }
+  function fmt(iso){
+    try{
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, {year:"numeric", month:"short", day:"2-digit", hour:"2-digit", minute:"2-digit"});
+    }catch{ return "—"; }
+  }
+  function esc(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+  function downloadText(filename, text, mime){
+    const blob = new Blob([text], { type: mime || "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  }
+
+  // Prevent shortcuts while typing
+  function isTypingTarget(el){
+    if(!el) return false;
+    const tag = (el.tagName || "").toLowerCase();
+    if(tag === "input" || tag === "textarea" || tag === "select") return true;
+    if(el.isContentEditable) return true;
+    return false;
+  }
+
+  /* ---------- Views (Landing / Vault) ---------- */
+  function setView(view){
+    const isLanding = view === "landing";
+    ui.landingView.classList.toggle("hidden", !isLanding);
+    ui.vaultView.classList.toggle("hidden", isLanding);
+    ui.viewBadge.textContent = isLanding ? "landing" : "vault";
+
+    // Hide search on landing (clean)
+    ui.searchWrap.style.display = isLanding ? "none" : "flex";
+
+    // Disable some menus when on landing (still visible but okay)
+    // We’ll just let them work—people might want import/export from landing too.
+  }
+
+  /* ---------- IndexedDB (PDFs) ---------- */
+  function idbOpen(){
+    return new Promise((resolve, reject)=>{
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = ()=>{
+        const db = req.result;
+        if(!db.objectStoreNames.contains(DB_STORE)){
+          db.createObjectStore(DB_STORE, { keyPath: "id" });
+        }
+      };
+      req.onsuccess = ()=> resolve(req.result);
+      req.onerror = ()=> reject(req.error);
+    });
+  }
+  async function idbPutPdf(id, file){
+    const db = await idbOpen();
+    const buf = await file.arrayBuffer();
+    const rec = { id, name:file.name, type:file.type||"application/pdf", size:file.size, updatedAt:now(), buf };
+    await new Promise((resolve, reject)=>{
+      const tx = db.transaction(DB_STORE, "readwrite");
+      tx.objectStore(DB_STORE).put(rec);
+      tx.oncomplete = resolve;
+      tx.onerror = ()=> reject(tx.error);
+    });
+    db.close();
+    return rec;
+  }
+  async function idbGetPdf(id){
+    const db = await idbOpen();
+    const rec = await new Promise((resolve, reject)=>{
+      const tx = db.transaction(DB_STORE, "readonly");
+      const rq = tx.objectStore(DB_STORE).get(id);
+      rq.onsuccess = ()=> resolve(rq.result || null);
+      rq.onerror = ()=> reject(rq.error);
+    });
+    db.close();
+    return rec;
+  }
+  async function idbDeletePdf(id){
+    const db = await idbOpen();
+    await new Promise((resolve, reject)=>{
+      const tx = db.transaction(DB_STORE, "readwrite");
+      tx.objectStore(DB_STORE).delete(id);
+      tx.oncomplete = resolve;
+      tx.onerror = ()=> reject(tx.error);
+    });
+    db.close();
+  }
+  function blobUrlFromRec(rec){
+    const blob = new Blob([rec.buf], { type: rec.type || "application/pdf" });
+    return URL.createObjectURL(blob);
+  }
+  let currentPdfUrl = null;
+  function clearPdfUrl(){
+    if(currentPdfUrl){
+      try{ URL.revokeObjectURL(currentPdfUrl); }catch(_e){}
+      currentPdfUrl = null;
+    }
+  }
+
+  /* ---------- State ---------- */
+  function seedState(){
+    const ideas     = { id: uid("fld"), name:"Ideas",        parentId:null, createdAt: now() };
+    const drafts    = { id: uid("fld"), name:"Drafts",       parentId:null, createdAt: now() };
+    const research  = { id: uid("fld"), name:"Research",     parentId:null, createdAt: now() };
+    const uploads   = { id: uid("fld"), name:"PDFs",         parentId:null, createdAt: now() };
+
+    const hooks     = { id: uid("fld"), name:"Hooks",        parentId: ideas.id, createdAt: now() };
+    const series    = { id: uid("fld"), name:"Series",       parentId: ideas.id, createdAt: now() };
+    const oneOffs   = { id: uid("fld"), name:"One-offs",     parentId: ideas.id, createdAt: now() };
+
+    const exConcept = {
+      id: uid("f"),
+      folderId: oneOffs.id,
+      type: "concept",
+      name: "Example concept",
+      createdAt: now(), updatedAt: now(),
+      data: {
+        status:"idea",
+        tags:["challenge"],
+        hook:"Start with the result, then cut back.",
+        concept:"Brain dump the premise in plain English.",
+        beats:"1) Setup\n2) Attempt\n3) Problem\n4) Twist\n5) Result\n6) Takeaway",
+        shots:"- Face reaction\n- Montage\n- Final reveal",
+        thumb:"Big before/after + 2–4 words.",
+        titles:"I Tried ___ For 7 Days\n___ Challenge (What Happened)"
+      }
+    };
+
+    const exNote = {
+      id: uid("f"),
+      folderId: hooks.id,
+      type:"note",
+      name:"Hook stash",
+      createdAt: now(), updatedAt: now(),
+      content:"- I wish I knew this sooner…\n- I tried ___ so you don’t have to\n- The mistake everyone makes with ___\n"
+    };
+
+    const exJson = {
+      id: uid("f"),
+      folderId: drafts.id,
+      type:"json",
+      name:"concept-template.json",
+      createdAt: now(), updatedAt: now(),
+      content: JSON.stringify({
+        title: "",
+        status: "idea",
+        tags: [],
+        hook: "",
+        concept: "",
+        beats: "",
+        shots: "",
+        thumbnail: "",
+        titles: ""
+      }, null, 2)
+    };
+
+    return {
+      folders:[ideas, drafts, research, uploads, hooks, series, oneOffs],
+      files:[exConcept, exNote, exJson],
+      settings:{ themeId:"paper-light", startOn:"landing" },
+      ui:{ folderOpen:{} }
+    };
+  }
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return seedState();
+      const data = JSON.parse(raw);
+      if(!data || !Array.isArray(data.folders) || !Array.isArray(data.files)) return seedState();
+      if(!data.settings) data.settings = { themeId:"paper-light", startOn:"landing" };
+      if(data.settings.startOn !== "landing" && data.settings.startOn !== "vault") data.settings.startOn = "landing";
+      if(!data.ui) data.ui = { folderOpen:{} };
+      if(!data.ui.folderOpen) data.ui.folderOpen = {};
+      return data;
+    }catch(_e){
+      return seedState();
+    }
+  }
+
+  let state = loadState();
+  let settings = state.settings;
+
+  let activeFolderId = state.folders[0]?.id || null;
+  let selectedFileId = null;
+  let openFileId = null;
+
+  let dirty = false;
+
+  function saveState(){
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    dirty = false;
+    ui.dirtyMark.textContent = "";
+  }
+  function setDirty(v){
+    dirty = !!v;
+    ui.dirtyMark.textContent = dirty ? "Unsaved changes" : "";
+  }
+
+  /* ---------- Bug 1 fix: prune empty junk folders on launch ---------- */
+  function folderChildren(parentId){
+    return state.folders
+      .filter(f => (f.parentId || null) === (parentId || null))
+      .slice()
+      .sort((a,b)=> String(a.name||"").localeCompare(String(b.name||""), undefined, {sensitivity:"base"}));
+  }
+  function descendants(folderId){
+    const out = [];
+    const stack = [folderId];
+    while(stack.length){
+      const cur = stack.pop();
+      out.push(cur);
+      const kids = state.folders.filter(f=>f.parentId===cur);
+      kids.forEach(k=>stack.push(k.id));
+    }
+    return out;
+  }
+  function folderHasAnyFilesDeep(folderId){
+    const ids = descendants(folderId);
+    return state.files.some(f=>ids.includes(f.folderId));
+  }
+  function pruneEmptyFoldersIterative(){
+    let changed = true;
+    while(changed){
+      changed = false;
+      const keepNames = new Set(["Ideas","Drafts","Research","PDFs","Hooks","Series","One-offs"]);
+      const before = state.folders.length;
+
+      state.folders = state.folders.filter(f=>{
+        if(keepNames.has(f.name)) return true;
+        return folderHasAnyFilesDeep(f.id);
+      });
+
+      if(state.folders.length !== before) changed = true;
+
+      const existing = new Set(state.folders.map(f=>f.id));
+      Object.keys(state.ui.folderOpen||{}).forEach(k=>{
+        if(!existing.has(k)) delete state.ui.folderOpen[k];
+      });
+    }
+  }
+
+  /* ---------- Theme ---------- */
+  function applyTheme(){
+    const id = settings.themeId || "paper-light";
+    document.body.className = "theme-" + id;
+    ui.themeSelect.value = id;
+  }
+
+  /* ---------- Data access ---------- */
+  function getFolder(id){ return state.folders.find(f=>f.id===id) || null; }
+  function getFile(id){ return state.files.find(f=>f.id===id) || null; }
+  function folderFileCount(folderId){
+    return state.files.filter(x=>x.folderId===folderId).length;
+  }
+  function ensureFolderOpen(folderId){
+    if(state.ui.folderOpen[folderId] === undefined) state.ui.folderOpen[folderId] = true;
+    return !!state.ui.folderOpen[folderId];
+  }
+  function toggleFolderOpen(folderId){
+    state.ui.folderOpen[folderId] = !ensureFolderOpen(folderId);
+    saveState();
+    renderExplorer();
+  }
+
+  function searchQuery(){ return (ui.q.value || "").trim().toLowerCase(); }
+  function fileMatchesQuery(f, q){
+    if(!q) return true;
+    const hay = (String(f.name||"") + " " + String(f.type||"") + " " + String(f.content||"") + " " + JSON.stringify(f.data||{})).toLowerCase();
+    return hay.includes(q);
+  }
+  function filesInFolder(folderId){
+    const q = searchQuery();
+    const files = state.files
+      .filter(f=>f.folderId===folderId && fileMatchesQuery(f,q))
+      .slice();
+    files.sort((a,b)=>{
+      const u = String(b.updatedAt||"").localeCompare(String(a.updatedAt||""));
+      if(u!==0) return u;
+      return String(a.name||"").localeCompare(String(b.name||""), undefined, {sensitivity:"base"});
+    });
+    return files;
+  }
+
+  function iconForType(t){
+    if(t==="concept") return "C";
+    if(t==="note") return "N";
+    if(t==="pdf") return "P";
+    if(t==="json") return "J";
+    return "?";
+  }
+  function typeLabel(t){
+    if(t==="concept") return "Concept";
+    if(t==="note") return "Note";
+    if(t==="pdf") return "PDF";
+    if(t==="json") return "JSON";
+    return "File";
+  }
+
+  /* ---------- Render ---------- */
+  function renderExplorer(){
+    ui.counts.textContent = state.folders.length + " • " + state.files.length;
+
+    const af = getFolder(activeFolderId);
+    ui.foldersTiny.textContent = af ? ("Selected: " + af.name) : "—";
+    ui.filesTiny.textContent = af ? ("In: " + af.name) : "—";
+
+    renderFolderTree();
+    renderFileList();
+    renderOpenFile();
+  }
+
+  function renderFolderTree(){
+    ui.folderTree.innerHTML = "";
+    const roots = folderChildren(null);
+    if(roots.length === 0){
+      ui.folderTree.innerHTML = '<div class="hint" style="padding:10px;">No folders.</div>';
+      return;
+    }
+    roots.forEach(root=> renderFolderNode(root, 0));
+
+    function renderFolderNode(folder, depth){
+      const kids = folderChildren(folder.id);
+      const isOpen = ensureFolderOpen(folder.id);
+
+      const row = document.createElement("div");
+      row.className = "treeRow" + (folder.id===activeFolderId ? " active" : "");
+      row.dataset.folderId = folder.id;
+
+      row.innerHTML = [
+        '<div class="indent" style="--w:' + (depth*16) + 'px;"></div>',
+        '<span class="twisty">' + (kids.length ? (isOpen ? '▾' : '▸') : '·') + '</span>',
+        '<span class="icon">📁</span>',
+        '<span class="label">' + esc(folder.name) + '</span>',
+        '<span class="count">' + folderFileCount(folder.id) + '</span>'
+      ].join("");
+
+      row.onclick = (e)=>{
+        const x = e.target;
+        if(kids.length && (x.classList && (x.classList.contains("twisty") || x.closest(".twisty")))){
+          toggleFolderOpen(folder.id);
+          return;
+        }
+        if(dirty) saveOpenFile();
+        activeFolderId = folder.id;
+        selectedFileId = null;
+        openFileId = null;
+        renderExplorer();
+      };
+
+      row.oncontextmenu = (e)=>{
+        e.preventDefault();
+        if(dirty) saveOpenFile();
+        activeFolderId = folder.id;
+        selectedFileId = null;
+        openFileId = null;
+        renderExplorer();
+        openCtxMenu(e.clientX, e.clientY, buildFolderCtx(folder.id));
+      };
+
+      ui.folderTree.appendChild(row);
+
+      if(kids.length && isOpen){
+        kids.forEach(k=>renderFolderNode(k, depth+1));
+      }
+    }
+  }
+
+  function renderFileList(){
+    const files = filesInFolder(activeFolderId);
+    ui.fileCount.textContent = String(files.length);
+    ui.fileList.innerHTML = "";
+
+    ui.fileList.oncontextmenu = (e)=>{
+      if(e.target === ui.fileList){
+        e.preventDefault();
+        openCtxMenu(e.clientX, e.clientY, buildEmptyFilesCtx());
+      }
+    };
+
+    if(files.length===0){
+      const empty = document.createElement("div");
+      empty.className = "rowItem";
+      empty.style.cursor = "default";
+      empty.innerHTML =
+        '<div class="rowLeft">' +
+          '<div class="rowName">No files</div>' +
+          '<div class="rowMeta">Click “+ New…” or right-click here.</div>' +
+        '</div><span class="pill">—</span>';
+      empty.oncontextmenu = (e)=>{
+        e.preventDefault();
+        openCtxMenu(e.clientX, e.clientY, buildEmptyFilesCtx());
+      };
+      ui.fileList.appendChild(empty);
+      return;
+    }
+
+    files.forEach(f=>{
+      const row = document.createElement("div");
+      row.className = "rowItem" + (f.id===selectedFileId ? " active" : "");
+      row.dataset.fileId = f.id;
+      row.innerHTML =
+        '<div class="rowLeft">' +
+          '<div class="rowName"><span class="icon">' + esc(iconForType(f.type)) + '</span> ' + esc(f.name||"Untitled") + '</div>' +
+          '<div class="rowMeta">' + esc(typeLabel(f.type)) + ' • Updated ' + esc(fmt(f.updatedAt)) + '</div>' +
+        '</div>' +
+        '<span class="pill">' + esc(iconForType(f.type)) + '</span>';
+      row.onclick = ()=>{ selectedFileId = f.id; renderFileList(); };
+      row.ondblclick = ()=> openSelectedFile();
+      row.oncontextmenu = (e)=>{
+        e.preventDefault();
+        selectedFileId = f.id;
+        renderFileList();
+        openCtxMenu(e.clientX, e.clientY, buildFileCtx(f.id));
+      };
+      ui.fileList.appendChild(row);
+    });
+  }
+
+  function renderOpenFile(){
+    clearPdfUrl();
+
+    const folder = getFolder(activeFolderId);
+    const file = getFile(openFileId);
+
+    ui.crumbs.innerHTML = [
+      '<span>ConceptVaults</span>',
+      '<span class="sep">›</span>',
+      '<span>' + esc(folder ? folder.name : "—") + '</span>',
+      file ? ('<span class="sep">›</span><span>' + esc(file.name||"Untitled") + '</span>') : ''
+    ].join(" ");
+
+    ui.pageMeta.innerHTML = "";
+
+    if(!file){
+      ui.pageTitle.textContent = "Select a file";
+      ui.pageBody.innerHTML = '<div class="hint">Pick a folder → pick a file → Open. Right-click folders/files for options.</div>';
+      return;
+    }
+
+    ui.pageTitle.textContent = file.name || "Untitled";
+    ui.pageMeta.innerHTML = [
+      '<span>Type: ' + esc(typeLabel(file.type)) + '</span>',
+      '<span class="k">' + esc(String(file.type||"").toUpperCase()) + '</span>',
+      '<span>Created: ' + esc(fmt(file.createdAt)) + '</span>',
+      '<span>Updated: ' + esc(fmt(file.updatedAt)) + '</span>'
+    ].join("");
+
+    if(file.type==="concept") renderConceptPage(file);
+    else if(file.type==="note") renderNotePage(file);
+    else if(file.type==="json") renderJsonPage(file);
+    else if(file.type==="pdf") renderPdfPage(file);
+    else ui.pageBody.innerHTML = '<div class="hint">Unknown file type.</div>';
+  }
+
+  /* ---------- Pages ---------- */
+  function parseTags(s){
+    return (s||"").split(",").map(t=>t.trim()).filter(Boolean).slice(0,24);
+  }
+
+  function renderConceptPage(file){
+    const d = file.data || {};
+    ui.pageBody.innerHTML = [
+      '<div class="docPage">',
+
+        '<div class="field"><div class="labelUp">Status</div>',
+          '<select id="c_status">',
+            ['idea','draft','script','film','edit','posted'].map(s=>{
+              const sel = (d.status===s) ? ' selected' : '';
+              return '<option value="'+s+'"'+sel+'>'+s+'</option>';
+            }).join(""),
+          '</select>',
+        '</div>',
+
+        '<div style="height:12px"></div>',
+
+        '<div class="field"><div class="labelUp">Tags (comma separated)</div>',
+          '<input type="text" id="c_tags" value="'+esc((d.tags||[]).join(", "))+'" placeholder="commentary, challenge, tutorial"/>',
+        '</div>',
+
+        '<div style="height:12px"></div>',
+
+        '<div class="field"><div class="labelUp">Hook</div>',
+          '<textarea id="c_hook" placeholder="First 3–7 seconds…">'+esc(d.hook||"")+'</textarea>',
+        '</div>',
+
+        '<div style="height:12px"></div>',
+
+        '<div class="field"><div class="labelUp">Concept (free write)</div>',
+          '<textarea id="c_concept" placeholder="Brain dump…">'+esc(d.concept||"")+'</textarea>',
+        '</div>',
+
+        '<div style="height:12px"></div>',
+
+        '<div class="grid2">',
+          '<div class="field"><div class="labelUp">Structure / beats</div>',
+            '<textarea id="c_beats" placeholder="1) Setup… 2) Twist…">'+esc(d.beats||"")+'</textarea>',
+          '</div>',
+          '<div class="field"><div class="labelUp">Shots / b-roll</div>',
+            '<textarea id="c_shots" placeholder="- Establishing…">'+esc(d.shots||"")+'</textarea>',
+          '</div>',
+        '</div>',
+
+        '<div style="height:12px"></div>',
+
+        '<div class="grid2">',
+          '<div class="field"><div class="labelUp">Thumbnail idea</div>',
+            '<textarea id="c_thumb" placeholder="Big result + 2–4 words…">'+esc(d.thumb||"")+'</textarea>',
+          '</div>',
+          '<div class="field"><div class="labelUp">Title options</div>',
+            '<textarea id="c_titles" placeholder="One per line…">'+esc(d.titles||"")+'</textarea>',
+          '</div>',
+        '</div>',
+
+      '</div>'
+    ].join("");
+
+    ["c_status","c_tags","c_hook","c_concept","c_beats","c_shots","c_thumb","c_titles"].forEach(id=>{
+      const el = $(id);
+      if(!el) return;
+      el.addEventListener("input", ()=> setDirty(true));
+      el.addEventListener("change", ()=> setDirty(true));
+    });
+  }
+
+  function renderNotePage(file){
+    ui.pageBody.innerHTML = [
+      '<div class="docPage">',
+        '<div class="field">',
+          '<div class="labelUp">Note</div>',
+          '<textarea id="noteEditor" style="min-height:70vh" placeholder="Write anything…">'+esc(file.content||"")+'</textarea>',
+        '</div>',
+      '</div>'
+    ].join("");
+    const ed = $("noteEditor");
+    if(ed) ed.addEventListener("input", ()=> setDirty(true));
+  }
+
+  function renderJsonPage(file){
+    ui.pageBody.innerHTML = [
+      '<div class="docPage">',
+        '<div class="field">',
+          '<div class="labelUp">JSON</div>',
+          '<textarea id="jsonEditor" style="min-height:70vh; font-family:var(--mono);" placeholder="{ }">'+esc(file.content||"")+'</textarea>',
+          '<div class="hint" style="margin-top:10px;">Templates, checklists, draft structures — anything structured.</div>',
+          '<div class="noPrint" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">',
+            '<button class="btn" id="jsonFormatBtn">Format</button>',
+            '<button class="btn" id="jsonDownloadBtn">Download .json</button>',
+          '</div>',
+        '</div>',
+      '</div>'
+    ].join("");
+
+    const ed = $("jsonEditor");
+    if(ed) ed.addEventListener("input", ()=> setDirty(true));
+
+    $("jsonFormatBtn").onclick = ()=>{
+      try{
+        const obj = JSON.parse(ed.value || "{}");
+        ed.value = JSON.stringify(obj, null, 2);
+        setDirty(true);
+      }catch(e){
+        alert("Invalid JSON: " + (e && e.message ? e.message : "parse error"));
+      }
+    };
+
+    $("jsonDownloadBtn").onclick = ()=>{
+      const name = (file.name && file.name.toLowerCase().endsWith(".json")) ? file.name : (file.name || "file") + ".json";
+      downloadText(name, ed.value || "{}", "application/json");
+    };
+  }
+
+  async function renderPdfPage(file){
+    ui.pageBody.innerHTML = [
+      '<div class="docPage">',
+        '<div class="field">',
+          '<div class="labelUp">PDF Viewer</div>',
+          '<div class="hint" style="margin-bottom:10px;">Stored locally (IndexedDB). Nothing uploads anywhere.</div>',
+          '<div class="noPrint" style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:10px;">',
+            '<div style="display:flex; gap:8px; flex-wrap:wrap;">',
+              '<button class="btn" id="replacePdfBtn">Replace PDF</button>',
+              '<button class="btn danger" id="removePdfBtn">Delete PDF</button>',
+            '</div>',
+            '<div class="tiny" id="pdfMeta">Loading…</div>',
+          '</div>',
+          '<iframe id="pdfFrame" style="width:100%; height:70vh; border:1px solid var(--line); border-radius:12px; background:var(--panel2);"></iframe>',
+        '</div>',
+      '</div>'
+    ].join("");
+
+    const pdfMeta = $("pdfMeta");
+    const frame = $("pdfFrame");
+
+    if(!file.pdfId){
+      if(pdfMeta) pdfMeta.textContent = "No PDF attached.";
+      if(frame) frame.removeAttribute("src");
+    }else{
+      const rec = await idbGetPdf(file.pdfId);
+      if(!rec){
+        if(pdfMeta) pdfMeta.textContent = "PDF missing. Re-import or replace.";
+        if(frame) frame.removeAttribute("src");
+      }else{
+        if(pdfMeta) pdfMeta.textContent = rec.name + " • " + (rec.size/1024/1024).toFixed(2) + " MB";
+        currentPdfUrl = blobUrlFromRec(rec);
+        if(frame) frame.src = currentPdfUrl;
+      }
+    }
+
+    $("replacePdfBtn").onclick = ()=>{ ui.pdfInput.value=""; ui.pdfInput.click(); };
+    $("removePdfBtn").onclick = async ()=>{
+      const ok = confirm("Delete this PDF from local storage? (Cannot be undone)");
+      if(!ok) return;
+      if(file.pdfId) await idbDeletePdf(file.pdfId);
+      file.pdfId = null;
+      file.updatedAt = now();
+      saveState();
+      renderExplorer();
+    };
+  }
+
+  /* ---------- Save/Open ---------- */
+  function saveOpenFile(){
+    const f = getFile(openFileId);
+    if(!f) return;
+
+    if(f.type==="note"){
+      const ed = $("noteEditor");
+      if(ed) f.content = ed.value || "";
+    }else if(f.type==="json"){
+      const ed = $("jsonEditor");
+      if(ed) f.content = ed.value || "";
+    }else if(f.type==="concept"){
+      f.data = f.data || {};
+      const d = f.data;
+      d.status = $("c_status") ? $("c_status").value : (d.status||"idea");
+      d.tags = parseTags($("c_tags") ? $("c_tags").value : "");
+      d.hook = $("c_hook") ? $("c_hook").value : "";
+      d.concept = $("c_concept") ? $("c_concept").value : "";
+      d.beats = $("c_beats") ? $("c_beats").value : "";
+      d.shots = $("c_shots") ? $("c_shots").value : "";
+      d.thumb = $("c_thumb") ? $("c_thumb").value : "";
+      d.titles = $("c_titles") ? $("c_titles").value : "";
+    }
+
+    f.updatedAt = now();
+    saveState();
+    renderExplorer();
+  }
+
+  function openSelectedFile(){
+    if(!selectedFileId) return;
+    if(dirty) saveOpenFile();
+    openFileId = selectedFileId;
+    renderExplorer();
+  }
+
+  /* ---------- Folder actions ---------- */
+  function newFolder(parentId){
+    const name = prompt("Folder name:");
+    if(!name) return;
+    state.folders.push({ id: uid("fld"), name: name.trim().slice(0,60), parentId: parentId || null, createdAt: now() });
+    saveState();
+    renderExplorer();
+  }
+  function renameFolder(){
+    const f = getFolder(activeFolderId);
+    if(!f) return;
+    const name = prompt("Rename folder:", f.name);
+    if(!name) return;
+    f.name = name.trim().slice(0,60);
+    saveState();
+    renderExplorer();
+  }
+  async function deleteFolder(){
+    const f = getFolder(activeFolderId);
+    if(!f) return;
+
+    const ids = descendants(f.id);
+    const ok = confirm("Delete this folder and ALL subfolders + files inside? (Cannot be undone)");
+    if(!ok) return;
+
+    const filesToDelete = state.files.filter(x=>ids.includes(x.folderId));
+    for(const x of filesToDelete){
+      if(x.type==="pdf" && x.pdfId){
+        try{ await idbDeletePdf(x.pdfId); }catch(_e){}
+      }
+    }
+
+    state.files = state.files.filter(x=>!ids.includes(x.folderId));
+    state.folders = state.folders.filter(x=>!ids.includes(x.id));
+
+    activeFolderId = state.folders[0]?.id || null;
+    selectedFileId = null;
+    openFileId = null;
+
+    saveState();
+    renderExplorer();
+  }
+
+  /* ---------- File actions ---------- */
+  function newConcept(){
+    const name = prompt("Concept name:", "Untitled concept");
+    if(!name) return;
+    const f = {
+      id: uid("f"),
+      folderId: activeFolderId,
+      type:"concept",
+      name: name.trim().slice(0,90),
+      createdAt: now(), updatedAt: now(),
+      data: { status:"idea", tags:[], hook:"", concept:"", beats:"", shots:"", thumb:"", titles:"" }
+    };
+    state.files.unshift(f);
+    saveState();
+    selectedFileId = f.id;
+    openSelectedFile();
+    setView("vault");
+  }
+  function newNote(){
+    const name = prompt("Note name:", "Untitled note");
+    if(!name) return;
+    const f = {
+      id: uid("f"),
+      folderId: activeFolderId,
+      type:"note",
+      name: name.trim().slice(0,90),
+      createdAt: now(), updatedAt: now(),
+      content: ""
+    };
+    state.files.unshift(f);
+    saveState();
+    selectedFileId = f.id;
+    openSelectedFile();
+    setView("vault");
+  }
+  function newJson(){
+    const name = prompt("JSON file name:", "file.json");
+    if(!name) return;
+    const finalName = name.toLowerCase().endsWith(".json") ? name.trim() : (name.trim() + ".json");
+    const f = {
+      id: uid("f"),
+      folderId: activeFolderId,
+      type:"json",
+      name: finalName.slice(0,100),
+      createdAt: now(), updatedAt: now(),
+      content: "{\n  \n}\n"
+    };
+    state.files.unshift(f);
+    saveState();
+    selectedFileId = f.id;
+    openSelectedFile();
+    setView("vault");
+  }
+
+  function renameFile(){
+    const f = getFile(selectedFileId);
+    if(!f) return;
+    const name = prompt("Rename file:", f.name || "Untitled");
+    if(!name) return;
+    f.name = name.trim().slice(0,100);
+    f.updatedAt = now();
+    saveState();
+    renderExplorer();
+  }
+  function duplicateFile(){
+    const f = getFile(selectedFileId);
+    if(!f) return;
+    const copy = JSON.parse(JSON.stringify(f));
+    copy.id = uid("f");
+    copy.name = (copy.name || "Untitled") + " (copy)";
+    copy.createdAt = now();
+    copy.updatedAt = now();
+    state.files.unshift(copy);
+    saveState();
+    selectedFileId = copy.id;
+    renderExplorer();
+  }
+  async function deleteFile(){
+    const f = getFile(selectedFileId);
+    if(!f) return;
+    const ok = confirm("Delete this file? (Cannot be undone)");
+    if(!ok) return;
+
+    if(f.type==="pdf" && f.pdfId){
+      try{ await idbDeletePdf(f.pdfId); }catch(_e){}
+    }
+
+    state.files = state.files.filter(x=>x.id!==f.id);
+    if(openFileId===f.id) openFileId = null;
+    selectedFileId = null;
+
+    saveState();
+    renderExplorer();
+  }
+
+  /* ---------- PDF import ---------- */
+  function baseName(filename){ return filename.replace(/\.pdf$/i,""); }
+
+  function bestImportRootName(files){
+    for(const f of files){
+      const p = f.webkitRelativePath || "";
+      if(p){
+        const parts = p.split("/").filter(Boolean);
+        if(parts.length) return parts[0].slice(0,60);
+      }
+    }
+    return "Imported PDFs";
+  }
+
+  function ensureFolderByName(name){
+    let f = state.folders.find(x=>String(x.name||"").toLowerCase() === String(name||"").toLowerCase() && (x.parentId||null)===null);
+    if(!f){
+      f = { id: uid("fld"), name: String(name||"").slice(0,60), parentId:null, createdAt: now() };
+      state.folders.push(f);
+    }
+    return f;
+  }
+
+  async function importPdfs(files, fromFolder){
+    if(!files || files.length===0) return;
+
+    if(fromFolder && files.length > 250){
+      const ok = confirm("This looks like a LOT of PDFs ("+files.length+"). Import anyway?");
+      if(!ok) return;
+    }
+
+    let targetFolderId = activeFolderId;
+
+    if(fromFolder){
+      const rootName = bestImportRootName(files);
+      const rootFolder = ensureFolderByName(rootName);
+      targetFolderId = rootFolder.id;
+    }
+
+    for(const file of files){
+      if(!file || file.type !== "application/pdf") continue;
+
+      const pdfId = uid("pdf");
+      await idbPutPdf(pdfId, file);
+
+      const f = {
+        id: uid("f"),
+        folderId: targetFolderId,
+        type:"pdf",
+        name: baseName(file.name).slice(0,100),
+        createdAt: now(), updatedAt: now(),
+        pdfId
+      };
+      state.files.unshift(f);
+    }
+
+    saveState();
+    const newest = state.files[0];
+    if(newest){
+      activeFolderId = newest.folderId;
+      selectedFileId = newest.id;
+      openFileId = newest.id;
+    }
+    renderExplorer();
+    setView("vault");
+  }
+
+  /* ---------- Vault JSON import/export ---------- */
+  function exportVaultJson(){
+    const payload = {
+      version: 1,
+      exportedAt: now(),
+      app: "ConceptVaults",
+      state: {
+        folders: state.folders,
+        files: state.files,
+        settings: state.settings,
+        ui: state.ui
+      }
+    };
+    downloadText("conceptvaults-vault.json", JSON.stringify(payload, null, 2), "application/json");
+  }
+  function importVaultJsonFile(file){
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const payload = JSON.parse(String(reader.result || "{}"));
+        if(!payload || !payload.state) throw new Error("Missing state");
+        if(!Array.isArray(payload.state.folders) || !Array.isArray(payload.state.files)) throw new Error("Invalid vault format");
+
+        state.folders = payload.state.folders;
+        state.files = payload.state.files;
+        state.settings = payload.state.settings || state.settings;
+        state.ui = payload.state.ui || state.ui;
+        if(!state.ui.folderOpen) state.ui.folderOpen = {};
+
+        pruneEmptyFoldersIterative();
+
+        activeFolderId = state.folders[0]?.id || null;
+        selectedFileId = null;
+        openFileId = null;
+        dirty = false;
+
+        saveState();
+        settings = state.settings;
+        applyTheme();
+        renderExplorer();
+        setView("vault");
+
+        alert("Vault imported. PDFs are local; re-import any missing ones.");
+      }catch(e){
+        alert("Import failed: " + (e && e.message ? e.message : "Invalid JSON"));
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function exportPdf(){
+    if(dirty) saveOpenFile();
+    window.print();
+  }
+
+  /* ---------- Menus ---------- */
+  function closeAllMenus(){
+    document.querySelectorAll(".menu").forEach(m=> m.style.display="none");
+  }
+  function toggleMenu(id){
+    const el = $(id);
+    const open = el.style.display === "block";
+    closeAllMenus();
+    el.style.display = open ? "none" : "block";
+  }
+  document.querySelectorAll(".menuBtn").forEach(btn=>{
+    btn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      toggleMenu(btn.getAttribute("data-menu"));
+    });
+  });
+  document.addEventListener("click", ()=> closeAllMenus());
+  document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeAllMenus(); });
+
+  /* ---------- Settings modal ---------- */
+  function openSettings(){ ui.settingsBack.style.display = "flex"; closeAllMenus(); closeCtxMenu(); }
+  function closeSettings(){ ui.settingsBack.style.display = "none"; }
+  ui.settingsTopBtn.onclick = openSettings;
+  ui.openSettingsBtn.onclick = openSettings;
+  ui.closeSettings.onclick = closeSettings;
+  ui.settingsBack.addEventListener("click", (e)=>{ if(e.target===ui.settingsBack) closeSettings(); });
+
+  ui.themeSelect.onchange = ()=>{
+    settings.themeId = ui.themeSelect.value;
+    applyTheme();
+    saveState();
+  };
+
+  /* ---------- New popup ---------- */
+  function openNew(){ ui.newBack.style.display = "flex"; closeAllMenus(); closeCtxMenu(); }
+  function closeNew(){ ui.newBack.style.display = "none"; }
+  ui.newPopupBtn.onclick = openNew;
+  ui.addFileBtn.onclick = openNew;
+  ui.closeNew.onclick = closeNew;
+  ui.newBack.addEventListener("click", (e)=>{ if(e.target===ui.newBack) closeNew(); });
+
+  ui.newConceptBtn.onclick = ()=>{ newConcept(); closeNew(); };
+  ui.newNoteBtn.onclick = ()=>{ newNote(); closeNew(); };
+  ui.newJsonBtn.onclick = ()=>{ newJson(); closeNew(); };
+  ui.newFolderBtn.onclick = ()=>{ newFolder(null); closeNew(); };
+  ui.newSubFolderBtn.onclick = ()=>{ newFolder(activeFolderId); closeNew(); };
+
+  /* ---------- Toolbar buttons ---------- */
+  ui.addFolderBtn.onclick = ()=> newFolder(null);
+  ui.addSubFolderBtn.onclick = ()=> newFolder(activeFolderId);
+  ui.renameFolderBtn.onclick = renameFolder;
+  ui.deleteFolderBtn.onclick = deleteFolder;
+
+  ui.renameFileBtn.onclick = renameFile;
+  ui.duplicateBtn.onclick = duplicateFile;
+  ui.deleteBtn.onclick = deleteFile;
+
+  ui.openBtn.onclick = ()=>{ openSelectedFile(); closeAllMenus(); setView("vault"); };
+  ui.saveBtn.onclick = ()=>{ if(openFileId) saveOpenFile(); closeAllMenus(); };
+  ui.saveBtn2.onclick = ()=>{ if(openFileId) saveOpenFile(); };
+
+  ui.importPdfBtn.onclick = ()=>{ ui.pdfInput.value=""; ui.pdfInput.click(); closeAllMenus(); };
+  ui.importFolderBtn.onclick = ()=>{ ui.folderInput.value=""; ui.folderInput.click(); closeAllMenus(); };
+
+  ui.pdfInput.addEventListener("change", async ()=>{ await importPdfs(Array.from(ui.pdfInput.files||[]), false); });
+  ui.folderInput.addEventListener("change", async ()=>{ await importPdfs(Array.from(ui.folderInput.files||[]), true); });
+
+  ui.exportBtn.onclick = ()=>{ exportPdf(); closeAllMenus(); };
+
+  function openVaultImport(){
+    ui.vaultJsonInput.value = "";
+    ui.vaultJsonInput.click();
+    closeAllMenus();
+    closeCtxMenu();
+  }
+  ui.importVaultBtn.onclick = openVaultImport;
+  ui.importVaultBtn2.onclick = openVaultImport;
+
+  ui.exportVaultBtn.onclick = ()=>{ exportVaultJson(); closeAllMenus(); };
+  ui.exportVaultBtn2.onclick = exportVaultJson;
+
+  ui.vaultJsonInput.addEventListener("change", ()=>{
+    const f = (ui.vaultJsonInput.files||[])[0];
+    if(!f) return;
+    importVaultJsonFile(f);
+  });
+
+  ui.wipeBtn.onclick = async ()=>{
+    const ok = confirm("Wipe ALL ConceptVaults local data? (Cannot be undone)");
+    if(!ok) return;
+    try{
+      const db = await idbOpen();
+      await new Promise((resolve,reject)=>{
+        const tx = db.transaction(DB_STORE, "readwrite");
+        tx.objectStore(DB_STORE).clear();
+        tx.oncomplete = resolve;
+        tx.onerror = ()=> reject(tx.error);
+      });
+      db.close();
+    }catch(_e){}
+    localStorage.removeItem(LS_KEY);
+    location.reload();
+  };
+
+  ui.q.addEventListener("input", ()=> renderExplorer());
+
+  /* ---------- Right click context menus ---------- */
+  function closeCtxMenu(){
+    ui.ctxMenu.style.display = "none";
+    ui.ctxMenu.innerHTML = "";
+  }
+
+  function openCtxMenu(x, y, itemsHtml){
+    ui.ctxMenu.innerHTML = itemsHtml;
+    ui.ctxMenu.style.display = "block";
+
+    const pad = 10;
+    const rect = ui.ctxMenu.getBoundingClientRect();
+    let px = x, py = y;
+    if(px + rect.width > window.innerWidth - pad) px = window.innerWidth - rect.width - pad;
+    if(py + rect.height > window.innerHeight - pad) py = window.innerHeight - rect.height - pad;
+    ui.ctxMenu.style.left = px + "px";
+    ui.ctxMenu.style.top = py + "px";
+
+    ui.ctxMenu.querySelectorAll("[data-act]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const act = btn.getAttribute("data-act");
+        const id = btn.getAttribute("data-id");
+        closeCtxMenu();
+        runCtxAction(act, id);
+      });
+    });
+  }
+
+  function ctxItem(label, act, id, kbd){
+    return '<button class="menuItem" data-act="'+esc(act)+'" data-id="'+esc(id||"")+'">'+esc(label)+'<span class="kbd">'+esc(kbd||"")+'</span></button>';
+  }
+  function ctxSep(){ return '<div class="sepLine"></div>'; }
+
+  function buildFolderCtx(folderId){
+    return [
+      ctxItem("New file…", "new_popup", folderId, ""),
+      ctxItem("New subfolder", "new_subfolder", folderId, ""),
+      ctxSep(),
+      ctxItem("Rename folder", "rename_folder", folderId, ""),
+      ctxItem("Delete folder", "delete_folder", folderId, ""),
+    ].join("");
+  }
+
+  function buildFileCtx(fileId){
+    const f = getFile(fileId);
+    const exportLine = (f && f.id===openFileId) ? ctxItem("Export current → PDF", "export_pdf", fileId, "P") : "";
+    return [
+      ctxItem("Open", "open_file", fileId, "↵"),
+      ctxSep(),
+      ctxItem("Rename", "rename_file", fileId, ""),
+      ctxItem("Duplicate", "dup_file", fileId, ""),
+      ctxItem("Delete", "del_file", fileId, ""),
+      exportLine ? ctxSep() + exportLine : ""
+    ].join("");
+  }
+
+  function buildEmptyFilesCtx(){
+    return [
+      ctxItem("New…", "new_popup", "", ""),
+      ctxSep(),
+      ctxItem("Import PDF(s)", "import_pdfs", "", ""),
+      ctxItem("Import Folder (PDFs)", "import_folder", "", ""),
+    ].join("");
+  }
+
+  function runCtxAction(act, id){
+    if(act==="new_popup"){ openNew(); return; }
+    if(act==="new_subfolder"){ newFolder(id || activeFolderId); return; }
+    if(act==="rename_folder"){ activeFolderId = id; renameFolder(); return; }
+    if(act==="delete_folder"){ activeFolderId = id; deleteFolder(); return; }
+
+    if(act==="open_file"){ selectedFileId = id; openSelectedFile(); setView("vault"); return; }
+    if(act==="rename_file"){ selectedFileId = id; renameFile(); return; }
+    if(act==="dup_file"){ selectedFileId = id; duplicateFile(); return; }
+    if(act==="del_file"){ selectedFileId = id; deleteFile(); return; }
+
+    if(act==="export_pdf"){ exportPdf(); return; }
+    if(act==="import_pdfs"){ ui.pdfInput.value=""; ui.pdfInput.click(); return; }
+    if(act==="import_folder"){ ui.folderInput.value=""; ui.folderInput.click(); return; }
+  }
+
+  document.addEventListener("click", ()=> closeCtxMenu());
+  document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeCtxMenu(); });
+
+  /* ---------- Keybinds (safe) ---------- */
+  window.addEventListener("keydown", (e)=>{
+    if(isTypingTarget(document.activeElement)) return;
+
+    const isMac = navigator.platform.toLowerCase().includes("mac");
+    const mod = isMac ? e.metaKey : e.ctrlKey;
+
+    if(mod && e.key.toLowerCase()==="s"){
+      e.preventDefault();
+      if(openFileId) saveOpenFile();
+      return;
+    }
+    if(mod && e.key.toLowerCase()==="n"){
+      e.preventDefault();
+      openNew();
+      return;
+    }
+    if(mod && e.shiftKey && e.key.toLowerCase()==="f"){
+      e.preventDefault();
+      newFolder(null);
+      return;
+    }
+    if(e.key==="Enter" && selectedFileId){
+      openSelectedFile();
+      setView("vault");
+      return;
+    }
+    if(!mod && !e.altKey && !e.metaKey && e.key.toLowerCase()==="p"){
+      exportPdf();
+      return;
+    }
+  });
+
+  window.addEventListener("beforeunload", ()=>{
+    if(dirty){
+      try{ if(openFileId) saveOpenFile(); }catch(_e){}
+    }
+  });
+
+  /* ---------- Navigation buttons ---------- */
+  ui.startBtn.onclick = ()=> setView("vault");
+  ui.goVaultBtn.onclick = ()=> setView("vault");
+  ui.goLandingBtn.onclick = ()=> setView("landing");
+  ui.brandHome.onclick = ()=> setView("landing");
+
+  /* ---------- init ---------- */
+  pruneEmptyFoldersIterative();
+  saveState();
+  applyTheme();
+  renderExplorer();
+
+  // start view preference (default landing)
+  setView(settings.startOn || "landing");
+
+})();
+</script>
+</body>
+</html>
