@@ -86,8 +86,10 @@
       font-family: var(--sans);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow-x:hidden;
     }
 
+    /* Full-page landing background (glass themes get aurora) */
     body[class*="theme-glass-"]::before{
       content:"";
       position:fixed; inset:-200px;
@@ -100,6 +102,7 @@
       z-index:-1;
     }
 
+    /* TOPBAR (APP ONLY) */
     .topbar{
       position:sticky; top:0; z-index:50;
       border-bottom:1px solid var(--line);
@@ -619,95 +622,167 @@
     }
     .ctx .menuItem{ padding:10px 10px; border-radius: 12px; }
 
-    /* Landing */
-    .landing{
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 26px 14px 40px;
+    /* ============ FULL-PAGE LANDING (NOT FLOAT) ============ */
+    .landingFull{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
     }
-    .hero{
+    .landingTop{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 16px 0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .landingTop .wordmark{
+      font-family: var(--serif);
+      font-weight: 950;
+      letter-spacing: .2px;
+      font-size: 16px;
+    }
+    .landingTop .mini{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .landingMain{
+      flex:1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 16px 40px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .heroPanel{
       border:1px solid var(--line);
       background: var(--panel);
       border-radius: 22px;
-      padding: 22px;
       box-shadow: var(--shadow);
+      padding: 24px;
       position:relative;
       overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
     }
-    body[class*="theme-glass-"] .hero{
+    body[class*="theme-glass-"] .heroPanel{
       background: color-mix(in oklab, var(--panel) 75%, transparent);
       border-color: var(--glassBorder);
       backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
       -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
       box-shadow: var(--glassShadow);
     }
-    .hero h1{
+
+    .heroTitle{
       font-family: var(--serif);
       font-weight: 950;
-      font-size: 30px;
-      margin: 0 0 8px;
-      line-height: 1.15;
+      font-size: 38px;
+      line-height: 1.1;
+      margin: 0 0 10px;
+      letter-spacing: .2px;
     }
-    .hero p{ margin:0; color:var(--muted); font-size:13px; line-height:1.6; max-width: 70ch; }
-    .heroRow{
+    .heroSub{
+      margin:0;
+      color:var(--muted);
+      font-size: 13.5px;
+      line-height: 1.7;
+      max-width: 70ch;
+    }
+
+    .ctaRow{
+      margin-top: 18px;
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       align-items:center;
-      margin-top: 14px;
     }
-    .cards{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-      margin-top: 14px;
+
+    .ctaBig{
+      border:1px solid color-mix(in oklab, var(--accent) 35%, var(--line));
+      background: color-mix(in oklab, var(--accent) 18%, transparent);
+      color: color-mix(in oklab, var(--accent) 90%, var(--ink));
+      padding: 14px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor:pointer;
+      user-select:none;
+      font-weight: 700;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
     }
-    .card{
+    .ctaBig:hover{ transform: translateY(-1px); }
+    .ctaBig:active{ transform: translateY(0px); }
+
+    .ctaNote{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .sidePanel{
+      border:1px solid var(--line);
+      background: var(--panel);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    body[class*="theme-glass-"] .sidePanel{
+      background: color-mix(in oklab, var(--panel) 75%, transparent);
+      border-color: var(--glassBorder);
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      box-shadow: var(--glassShadow);
+    }
+
+    .feature{
       border:1px solid var(--line);
       background: var(--panel2);
       border-radius: 18px;
       padding: 14px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.08);
     }
-    body[class*="theme-glass-"] .card{
+    body[class*="theme-glass-"] .feature{
       border-color: var(--glassBorder);
       background: color-mix(in oklab, var(--panel2) 65%, transparent);
-      box-shadow: 0 18px 60px rgba(0,0,0,.16);
     }
-    .card b{
+
+    .feature b{
       font-family: var(--serif);
       font-weight: 950;
       display:block;
       margin-bottom: 6px;
     }
-    .card .tiny{ margin-top:6px; }
-    .steps{
-      margin-top: 14px;
-      border:1px solid var(--line);
-      background: var(--panel);
-      border-radius: 18px;
-      padding: 14px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.08);
-    }
-    body[class*="theme-glass-"] .steps{
-      border-color: var(--glassBorder);
-      background: color-mix(in oklab, var(--panel2) 55%, transparent);
-    }
-    .steps ol{ margin: 8px 0 0 18px; color:var(--muted); line-height:1.7; font-size:13px; }
-    .steps li{ margin-bottom: 6px; }
-    .miniHint{
-      margin-top: 10px;
-      font-size: 12px;
+    .feature .tiny{ line-height:1.6; }
+
+    .landingBottom{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px 18px;
       color: var(--muted);
-      line-height: 1.6;
+      font-size: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
     }
 
     .hidden{ display:none !important; }
 
     @media (max-width: 1100px){
       .wrap{ grid-template-columns: 1fr; }
+      .landingMain{ grid-template-columns: 1fr; }
+      .heroTitle{ font-size: 32px; }
       .brand{ min-width:unset; }
-      .cards{ grid-template-columns: 1fr; }
     }
 
     @media print{
@@ -725,11 +800,75 @@
 
 <body class="theme-paper-light">
 
-  <div class="topbar noPrint">
+  <!-- FULL PAGE LANDING (NO FLOAT UI, NO SETTINGS ON LANDING) -->
+  <main id="landingView" class="landingFull">
+    <div class="landingTop">
+      <div>
+        <div class="wordmark">ConceptVaults</div>
+        <div class="mini">Minimal vault for content creation ideas • local-first</div>
+      </div>
+      <div class="mini">Press <span class="pill" style="font-family:var(--mono);">Enter</span> to start</div>
+    </div>
+
+    <div class="landingMain">
+      <section class="heroPanel">
+        <div>
+          <h1 class="heroTitle">Write. Organize. Export.</h1>
+          <p class="heroSub">
+            Keep your concepts, notes, PDFs, and templates in one place — structured like a file explorer.
+            Draft quickly, keep everything tidy, and export any idea to a clean PDF when you’re ready.
+          </p>
+
+          <div class="ctaRow">
+            <button class="ctaBig" id="startBtn">Get started <span style="font-family:var(--mono);">→</span></button>
+          </div>
+
+          <div class="ctaNote" style="margin-top:12px;">
+            Inside the vault: create folders, add Concepts / Notes / JSON, import PDFs, right-click anything for quick actions.
+          </div>
+        </div>
+
+        <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+          <span class="pill">Folders</span>
+          <span class="pill">Concept sheets</span>
+          <span class="pill">Free notes</span>
+          <span class="pill">PDF library</span>
+          <span class="pill">Export to PDF</span>
+        </div>
+      </section>
+
+      <aside class="sidePanel">
+        <div class="feature">
+          <b>Fast capture</b>
+          <div class="tiny">Make a concept or note in seconds. Use the New… popup and keep moving.</div>
+        </div>
+        <div class="feature">
+          <b>Explorer layout</b>
+          <div class="tiny">Folders on the left, files in the middle, editor on the right. Right-click for power moves.</div>
+        </div>
+        <div class="feature">
+          <b>Export clean PDFs</b>
+          <div class="tiny">Open any file and press <span class="pill" style="font-family:var(--mono);">P</span> to print/export PDF.</div>
+        </div>
+        <div class="feature">
+          <b>Import PDFs & folders</b>
+          <div class="tiny">Import single PDFs or whole folders of PDFs and keep them stored locally.</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="landingBottom">
+      <div>Tip: In the vault, use <span class="pill" style="font-family:var(--mono);">Ctrl+N</span> for New… and <span class="pill" style="font-family:var(--mono);">Ctrl+S</span> to save.</div>
+      <div>ConceptVaults • local storage</div>
+    </div>
+  </main>
+
+  <!-- APP TOPBAR (SETTINGS IS HERE, NOT ON LANDING) -->
+  <div class="topbar noPrint hidden" id="appTopbar">
     <div class="topbarInner">
       <div class="brand" id="brandHome" title="Go to landing">
         <b>ConceptVaults</b>
-        <span id="viewBadge">landing</span>
+        <span id="viewBadge">vault</span>
       </div>
 
       <div class="search" id="searchWrap">
@@ -739,7 +878,6 @@
 
       <div class="menus">
         <button class="btn" id="goLandingBtn">Home</button>
-        <button class="btn primary" id="goVaultBtn">Vault</button>
 
         <div class="menuWrap">
           <button class="btn menuBtn" data-menu="menuNew">New <span class="caret">▾</span></button>
@@ -775,175 +913,10 @@
           </div>
         </div>
 
-        <!-- Settings is now a standalone button -->
         <button class="btn" id="settingsTopBtn">Settings</button>
       </div>
     </div>
   </div>
-
-  <!-- Landing Page -->
-   
-.landingFull{
-  min-height: calc(100vh - 64px);
-  display:flex;
-  flex-direction:column;
-  padding: 0;
-}
-
-.landingHeader{
-  padding: 22px 16px 6px;
-  max-width: 1100px;
-  width:100%;
-  margin:0 auto;
-}
-
-.landingBrand{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.landingMark{
-  font-family: var(--serif);
-  font-weight: 950;
-  font-size: 22px;
-  letter-spacing:.2px;
-}
-
-.landingSub{
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.6;
-  max-width: 80ch;
-}
-
-.landingMain{
-  max-width: 1100px;
-  width:100%;
-  margin:0 auto;
-  padding: 10px 16px 18px;
-  display:flex;
-  flex-direction:column;
-  gap: 14px;
-  flex:1;
-}
-
-.landingCenter{
-  border-top: 1px solid var(--line);
-  padding-top: 18px;
-}
-
-.landingTitle{
-  font-family: var(--serif);
-  font-weight: 950;
-  font-size: 34px;
-  line-height: 1.1;
-  margin: 0 0 10px;
-}
-
-.landingLead{
-  margin:0;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.75;
-  max-width: 78ch;
-}
-
-.landingCTA{
-  margin-top: 14px;
-  display:flex;
-  flex-direction:column;
-  gap: 10px;
-  align-items:flex-start;
-}
-
-.landingGetStarted{
-  padding: 12px 16px;
-  font-size: 13px;
-  border-radius: 999px;
-}
-
-.landingHint{
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.landingGrid{
-  display:grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 12px;
-  margin-top: 6px;
-}
-
-.landingCard{
-  border:1px solid var(--line);
-  background: var(--panel);
-  border-radius: 18px;
-  padding: 14px;
-  box-shadow: 0 12px 40px rgba(0,0,0,.06);
-}
-
-body[class*="theme-glass-"] .landingCard{
-  background: color-mix(in oklab, var(--panel2) 55%, transparent);
-  border-color: var(--glassBorder);
-  backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
-  -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
-  box-shadow: var(--glassShadow);
-}
-
-.landingCard b{
-  font-family: var(--serif);
-  font-weight: 950;
-  display:block;
-  margin-bottom: 6px;
-}
-
-.landingSteps{
-  margin-top: 2px;
-  border:1px solid var(--line);
-  background: var(--panel);
-  border-radius: 18px;
-  padding: 14px;
-  box-shadow: 0 12px 40px rgba(0,0,0,.06);
-}
-
-body[class*="theme-glass-"] .landingSteps{
-  background: color-mix(in oklab, var(--panel2) 55%, transparent);
-  border-color: var(--glassBorder);
-  backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
-  -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
-  box-shadow: var(--glassShadow);
-}
-
-.landingSteps b{
-  font-family: var(--serif);
-  font-weight: 950;
-}
-
-.landingSteps ol{
-  margin: 8px 0 0 18px;
-  color: var(--muted);
-  line-height: 1.8;
-  font-size: 13px;
-}
-
-.landingFooter{
-  max-width: 1100px;
-  width:100%;
-  margin: 0 auto;
-  padding: 0 16px 18px;
-  display:flex;
-  gap: 8px;
-  flex-wrap:wrap;
-  border-top: 1px solid var(--line);
-  padding-top: 14px;
-}
-
-@media (max-width: 980px){
-  .landingGrid{ grid-template-columns: 1fr; }
-  .landingTitle{ font-size: 28px; }
-}
 
   <!-- Vault App -->
   <div id="vaultView" class="wrap hidden">
@@ -1017,7 +990,7 @@ body[class*="theme-glass-"] .landingSteps{
   <input id="folderInput" type="file" accept="application/pdf" multiple webkitdirectory directory hidden />
   <input id="vaultJsonInput" type="file" accept="application/json" hidden />
 
-  <!-- Settings -->
+  <!-- Settings (APP ONLY) -->
   <div class="modalBack" id="settingsBack">
     <div class="modal">
       <div class="modalHead">
@@ -1105,25 +1078,21 @@ body[class*="theme-glass-"] .landingSteps{
 (function(){
   "use strict";
 
-  const LS_KEY = "conceptvaults_v5_landing_settings_button";
+  const LS_KEY = "conceptvaults_v6_fullpage_landing";
   const DB_NAME = "conceptvaults_pdfs";
   const DB_STORE = "pdfs";
 
   const $ = (id)=>document.getElementById(id);
 
   const ui = {
-    // nav/views
+    // landing / app
     landingView: $("landingView"),
     vaultView: $("vaultView"),
+    appTopbar: $("appTopbar"),
     viewBadge: $("viewBadge"),
     brandHome: $("brandHome"),
     goLandingBtn: $("goLandingBtn"),
-    goVaultBtn: $("goVaultBtn"),
     startBtn: $("startBtn"),
-    openSettingsBtn: $("openSettingsBtn"),
-
-    // top buttons
-    settingsTopBtn: $("settingsTopBtn"),
 
     q: $("q"),
     searchWrap: $("searchWrap"),
@@ -1141,6 +1110,7 @@ body[class*="theme-glass-"] .landingSteps{
     pageBody: $("pageBody"),
     dirtyMark: $("dirtyMark"),
 
+    settingsTopBtn: $("settingsTopBtn"),
     settingsBack: $("settingsBack"),
     closeSettings: $("closeSettings"),
     themeSelect: $("themeSelect"),
@@ -1212,7 +1182,6 @@ body[class*="theme-glass-"] .landingSteps{
     setTimeout(()=>URL.revokeObjectURL(url), 2000);
   }
 
-  // Prevent shortcuts while typing
   function isTypingTarget(el){
     if(!el) return false;
     const tag = (el.tagName || "").toLowerCase();
@@ -1221,21 +1190,18 @@ body[class*="theme-glass-"] .landingSteps{
     return false;
   }
 
-  /* ---------- Views (Landing / Vault) ---------- */
+  /* ---------- Views ---------- */
   function setView(view){
     const isLanding = view === "landing";
     ui.landingView.classList.toggle("hidden", !isLanding);
     ui.vaultView.classList.toggle("hidden", isLanding);
-    ui.viewBadge.textContent = isLanding ? "landing" : "vault";
+    ui.appTopbar.classList.toggle("hidden", isLanding);
 
-    // Hide search on landing (clean)
     ui.searchWrap.style.display = isLanding ? "none" : "flex";
-
-    // Disable some menus when on landing (still visible but okay)
-    // We’ll just let them work—people might want import/export from landing too.
+    if(ui.viewBadge) ui.viewBadge.textContent = isLanding ? "landing" : "vault";
   }
 
-  /* ---------- IndexedDB (PDFs) ---------- */
+  /* ---------- IndexedDB ---------- */
   function idbOpen(){
     return new Promise((resolve, reject)=>{
       const req = indexedDB.open(DB_NAME, 1);
@@ -1282,17 +1248,6 @@ body[class*="theme-glass-"] .landingSteps{
       tx.onerror = ()=> reject(tx.error);
     });
     db.close();
-  }
-  function blobUrlFromRec(rec){
-    const blob = new Blob([rec.buf], { type: rec.type || "application/pdf" });
-    return URL.createObjectURL(blob);
-  }
-  let currentPdfUrl = null;
-  function clearPdfUrl(){
-    if(currentPdfUrl){
-      try{ URL.revokeObjectURL(currentPdfUrl); }catch(_e){}
-      currentPdfUrl = null;
-    }
   }
 
   /* ---------- State ---------- */
@@ -1355,7 +1310,7 @@ body[class*="theme-glass-"] .landingSteps{
     return {
       folders:[ideas, drafts, research, uploads, hooks, series, oneOffs],
       files:[exConcept, exNote, exJson],
-      settings:{ themeId:"paper-light", startOn:"landing" },
+      settings:{ themeId:"paper-light" },
       ui:{ folderOpen:{} }
     };
   }
@@ -1366,8 +1321,7 @@ body[class*="theme-glass-"] .landingSteps{
       if(!raw) return seedState();
       const data = JSON.parse(raw);
       if(!data || !Array.isArray(data.folders) || !Array.isArray(data.files)) return seedState();
-      if(!data.settings) data.settings = { themeId:"paper-light", startOn:"landing" };
-      if(data.settings.startOn !== "landing" && data.settings.startOn !== "vault") data.settings.startOn = "landing";
+      if(!data.settings) data.settings = { themeId:"paper-light" };
       if(!data.ui) data.ui = { folderOpen:{} };
       if(!data.ui.folderOpen) data.ui.folderOpen = {};
       return data;
@@ -1395,7 +1349,7 @@ body[class*="theme-glass-"] .landingSteps{
     ui.dirtyMark.textContent = dirty ? "Unsaved changes" : "";
   }
 
-  /* ---------- Bug 1 fix: prune empty junk folders on launch ---------- */
+  /* Bug 1 fix: prune empty junk folders on launch */
   function folderChildren(parentId){
     return state.folders
       .filter(f => (f.parentId || null) === (parentId || null))
@@ -1438,14 +1392,13 @@ body[class*="theme-glass-"] .landingSteps{
     }
   }
 
-  /* ---------- Theme ---------- */
+  /* Theme */
   function applyTheme(){
     const id = settings.themeId || "paper-light";
     document.body.className = "theme-" + id;
     ui.themeSelect.value = id;
   }
 
-  /* ---------- Data access ---------- */
   function getFolder(id){ return state.folders.find(f=>f.id===id) || null; }
   function getFile(id){ return state.files.find(f=>f.id===id) || null; }
   function folderFileCount(folderId){
@@ -1495,7 +1448,6 @@ body[class*="theme-glass-"] .landingSteps{
     return "File";
   }
 
-  /* ---------- Render ---------- */
   function renderExplorer(){
     ui.counts.textContent = state.folders.length + " • " + state.files.length;
 
@@ -1616,8 +1568,6 @@ body[class*="theme-glass-"] .landingSteps{
   }
 
   function renderOpenFile(){
-    clearPdfUrl();
-
     const folder = getFolder(activeFolderId);
     const file = getFile(openFileId);
 
@@ -1651,7 +1601,6 @@ body[class*="theme-glass-"] .landingSteps{
     else ui.pageBody.innerHTML = '<div class="hint">Unknown file type.</div>';
   }
 
-  /* ---------- Pages ---------- */
   function parseTags(s){
     return (s||"").split(",").map(t=>t.trim()).filter(Boolean).slice(0,24);
   }
@@ -1660,7 +1609,6 @@ body[class*="theme-glass-"] .landingSteps{
     const d = file.data || {};
     ui.pageBody.innerHTML = [
       '<div class="docPage">',
-
         '<div class="field"><div class="labelUp">Status</div>',
           '<select id="c_status">',
             ['idea','draft','script','film','edit','posted'].map(s=>{
@@ -1709,7 +1657,6 @@ body[class*="theme-glass-"] .landingSteps{
             '<textarea id="c_titles" placeholder="One per line…">'+esc(d.titles||"")+'</textarea>',
           '</div>',
         '</div>',
-
       '</div>'
     ].join("");
 
@@ -1799,8 +1746,9 @@ body[class*="theme-glass-"] .landingSteps{
         if(frame) frame.removeAttribute("src");
       }else{
         if(pdfMeta) pdfMeta.textContent = rec.name + " • " + (rec.size/1024/1024).toFixed(2) + " MB";
-        currentPdfUrl = blobUrlFromRec(rec);
-        if(frame) frame.src = currentPdfUrl;
+        const blob = new Blob([rec.buf], { type: rec.type || "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        frame.src = url;
       }
     }
 
@@ -1816,7 +1764,6 @@ body[class*="theme-glass-"] .landingSteps{
     };
   }
 
-  /* ---------- Save/Open ---------- */
   function saveOpenFile(){
     const f = getFile(openFileId);
     if(!f) return;
@@ -1852,7 +1799,6 @@ body[class*="theme-glass-"] .landingSteps{
     renderExplorer();
   }
 
-  /* ---------- Folder actions ---------- */
   function newFolder(parentId){
     const name = prompt("Folder name:");
     if(!name) return;
@@ -1860,6 +1806,7 @@ body[class*="theme-glass-"] .landingSteps{
     saveState();
     renderExplorer();
   }
+
   function renameFolder(){
     const f = getFolder(activeFolderId);
     if(!f) return;
@@ -1869,6 +1816,7 @@ body[class*="theme-glass-"] .landingSteps{
     saveState();
     renderExplorer();
   }
+
   async function deleteFolder(){
     const f = getFolder(activeFolderId);
     if(!f) return;
@@ -1895,7 +1843,6 @@ body[class*="theme-glass-"] .landingSteps{
     renderExplorer();
   }
 
-  /* ---------- File actions ---------- */
   function newConcept(){
     const name = prompt("Concept name:", "Untitled concept");
     if(!name) return;
@@ -1911,7 +1858,6 @@ body[class*="theme-glass-"] .landingSteps{
     saveState();
     selectedFileId = f.id;
     openSelectedFile();
-    setView("vault");
   }
   function newNote(){
     const name = prompt("Note name:", "Untitled note");
@@ -1928,7 +1874,6 @@ body[class*="theme-glass-"] .landingSteps{
     saveState();
     selectedFileId = f.id;
     openSelectedFile();
-    setView("vault");
   }
   function newJson(){
     const name = prompt("JSON file name:", "file.json");
@@ -1946,7 +1891,6 @@ body[class*="theme-glass-"] .landingSteps{
     saveState();
     selectedFileId = f.id;
     openSelectedFile();
-    setView("vault");
   }
 
   function renameFile(){
@@ -1990,7 +1934,6 @@ body[class*="theme-glass-"] .landingSteps{
     renderExplorer();
   }
 
-  /* ---------- PDF import ---------- */
   function baseName(filename){ return filename.replace(/\.pdf$/i,""); }
 
   function bestImportRootName(files){
@@ -2015,11 +1958,6 @@ body[class*="theme-glass-"] .landingSteps{
 
   async function importPdfs(files, fromFolder){
     if(!files || files.length===0) return;
-
-    if(fromFolder && files.length > 250){
-      const ok = confirm("This looks like a LOT of PDFs ("+files.length+"). Import anyway?");
-      if(!ok) return;
-    }
 
     let targetFolderId = activeFolderId;
 
@@ -2054,10 +1992,8 @@ body[class*="theme-glass-"] .landingSteps{
       openFileId = newest.id;
     }
     renderExplorer();
-    setView("vault");
   }
 
-  /* ---------- Vault JSON import/export ---------- */
   function exportVaultJson(){
     const payload = {
       version: 1,
@@ -2072,6 +2008,7 @@ body[class*="theme-glass-"] .landingSteps{
     };
     downloadText("conceptvaults-vault.json", JSON.stringify(payload, null, 2), "application/json");
   }
+
   function importVaultJsonFile(file){
     const reader = new FileReader();
     reader.onload = ()=>{
@@ -2097,7 +2034,6 @@ body[class*="theme-glass-"] .landingSteps{
         settings = state.settings;
         applyTheme();
         renderExplorer();
-        setView("vault");
 
         alert("Vault imported. PDFs are local; re-import any missing ones.");
       }catch(e){
@@ -2112,7 +2048,6 @@ body[class*="theme-glass-"] .landingSteps{
     window.print();
   }
 
-  /* ---------- Menus ---------- */
   function closeAllMenus(){
     document.querySelectorAll(".menu").forEach(m=> m.style.display="none");
   }
@@ -2131,11 +2066,9 @@ body[class*="theme-glass-"] .landingSteps{
   document.addEventListener("click", ()=> closeAllMenus());
   document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeAllMenus(); });
 
-  /* ---------- Settings modal ---------- */
   function openSettings(){ ui.settingsBack.style.display = "flex"; closeAllMenus(); closeCtxMenu(); }
   function closeSettings(){ ui.settingsBack.style.display = "none"; }
   ui.settingsTopBtn.onclick = openSettings;
-  ui.openSettingsBtn.onclick = openSettings;
   ui.closeSettings.onclick = closeSettings;
   ui.settingsBack.addEventListener("click", (e)=>{ if(e.target===ui.settingsBack) closeSettings(); });
 
@@ -2145,7 +2078,6 @@ body[class*="theme-glass-"] .landingSteps{
     saveState();
   };
 
-  /* ---------- New popup ---------- */
   function openNew(){ ui.newBack.style.display = "flex"; closeAllMenus(); closeCtxMenu(); }
   function closeNew(){ ui.newBack.style.display = "none"; }
   ui.newPopupBtn.onclick = openNew;
@@ -2159,7 +2091,6 @@ body[class*="theme-glass-"] .landingSteps{
   ui.newFolderBtn.onclick = ()=>{ newFolder(null); closeNew(); };
   ui.newSubFolderBtn.onclick = ()=>{ newFolder(activeFolderId); closeNew(); };
 
-  /* ---------- Toolbar buttons ---------- */
   ui.addFolderBtn.onclick = ()=> newFolder(null);
   ui.addSubFolderBtn.onclick = ()=> newFolder(activeFolderId);
   ui.renameFolderBtn.onclick = renameFolder;
@@ -2169,7 +2100,7 @@ body[class*="theme-glass-"] .landingSteps{
   ui.duplicateBtn.onclick = duplicateFile;
   ui.deleteBtn.onclick = deleteFile;
 
-  ui.openBtn.onclick = ()=>{ openSelectedFile(); closeAllMenus(); setView("vault"); };
+  ui.openBtn.onclick = ()=>{ openSelectedFile(); closeAllMenus(); };
   ui.saveBtn.onclick = ()=>{ if(openFileId) saveOpenFile(); closeAllMenus(); };
   ui.saveBtn2.onclick = ()=>{ if(openFileId) saveOpenFile(); };
 
@@ -2218,7 +2149,7 @@ body[class*="theme-glass-"] .landingSteps{
 
   ui.q.addEventListener("input", ()=> renderExplorer());
 
-  /* ---------- Right click context menus ---------- */
+  /* Right click context menu */
   function closeCtxMenu(){
     ui.ctxMenu.style.display = "none";
     ui.ctxMenu.innerHTML = "";
@@ -2262,15 +2193,14 @@ body[class*="theme-glass-"] .landingSteps{
   }
 
   function buildFileCtx(fileId){
-    const f = getFile(fileId);
-    const exportLine = (f && f.id===openFileId) ? ctxItem("Export current → PDF", "export_pdf", fileId, "P") : "";
     return [
       ctxItem("Open", "open_file", fileId, "↵"),
       ctxSep(),
       ctxItem("Rename", "rename_file", fileId, ""),
       ctxItem("Duplicate", "dup_file", fileId, ""),
       ctxItem("Delete", "del_file", fileId, ""),
-      exportLine ? ctxSep() + exportLine : ""
+      ctxSep(),
+      ctxItem("Export current → PDF", "export_pdf", fileId, "P"),
     ].join("");
   }
 
@@ -2289,7 +2219,7 @@ body[class*="theme-glass-"] .landingSteps{
     if(act==="rename_folder"){ activeFolderId = id; renameFolder(); return; }
     if(act==="delete_folder"){ activeFolderId = id; deleteFolder(); return; }
 
-    if(act==="open_file"){ selectedFileId = id; openSelectedFile(); setView("vault"); return; }
+    if(act==="open_file"){ selectedFileId = id; openSelectedFile(); return; }
     if(act==="rename_file"){ selectedFileId = id; renameFile(); return; }
     if(act==="dup_file"){ selectedFileId = id; duplicateFile(); return; }
     if(act==="del_file"){ selectedFileId = id; deleteFile(); return; }
@@ -2302,12 +2232,20 @@ body[class*="theme-glass-"] .landingSteps{
   document.addEventListener("click", ()=> closeCtxMenu());
   document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeCtxMenu(); });
 
-  /* ---------- Keybinds (safe) ---------- */
+  /* Keybinds (Bug 2 fix: no double-tap F. Folder is Ctrl+Shift+F.) */
   window.addEventListener("keydown", (e)=>{
     if(isTypingTarget(document.activeElement)) return;
 
     const isMac = navigator.platform.toLowerCase().includes("mac");
     const mod = isMac ? e.metaKey : e.ctrlKey;
+
+    if(e.key === "Enter" && !mod && !e.altKey && !e.metaKey){
+      // Enter on landing starts
+      if(!ui.landingView.classList.contains("hidden")){
+        setView("vault");
+        return;
+      }
+    }
 
     if(mod && e.key.toLowerCase()==="s"){
       e.preventDefault();
@@ -2326,7 +2264,6 @@ body[class*="theme-glass-"] .landingSteps{
     }
     if(e.key==="Enter" && selectedFileId){
       openSelectedFile();
-      setView("vault");
       return;
     }
     if(!mod && !e.altKey && !e.metaKey && e.key.toLowerCase()==="p"){
@@ -2341,20 +2278,19 @@ body[class*="theme-glass-"] .landingSteps{
     }
   });
 
-  /* ---------- Navigation buttons ---------- */
+  /* Navigation */
   ui.startBtn.onclick = ()=> setView("vault");
-  ui.goVaultBtn.onclick = ()=> setView("vault");
   ui.goLandingBtn.onclick = ()=> setView("landing");
   ui.brandHome.onclick = ()=> setView("landing");
 
-  /* ---------- init ---------- */
+  /* init */
   pruneEmptyFoldersIterative();
   saveState();
   applyTheme();
   renderExplorer();
 
-  // start view preference (default landing)
-  setView(settings.startOn || "landing");
+  // Start on landing always (as requested)
+  setView("landing");
 
 })();
 </script>
