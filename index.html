@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>ConceptVaults</title>
+  <title>ConceptVault</title>
+
+  <!-- FAVICON -->
+  <link rel="icon" type="image/png" href="https://github.com/conceptvaultco/conceptvaultco.github.io/blob/main/favicon.png?raw=true"/>
 
   <style>
     :root{
@@ -124,9 +127,29 @@
       gap:12px;
     }
 
-    .brand{ display:flex; align-items:baseline; gap:10px; min-width:220px; }
+    .brand{ display:flex; align-items:center; gap:10px; min-width:220px; cursor:pointer; }
     .brand b{ font-family: var(--serif); font-weight:950; letter-spacing:.2px; cursor:pointer; }
     .brand span{ color:var(--muted); font-size:12px; }
+
+    /* BRAND LOGO (replaces "ConceptVaults / vault" text) */
+    .brandLogo{
+      height:96px;
+      width:auto;
+      display:block;
+      object-fit:contain;
+      user-select:none;
+      -webkit-user-drag:none;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,.12));
+    }
+    /* Bigger on landing */
+    .brandLogo.landing{
+      height:114px;
+      filter: drop-shadow(0 16px 34px rgba(0,0,0,.14));
+    }
+    @media (max-width: 520px){
+      .brandLogo{ height:38px; }
+      .brandLogo.landing{ height:56px; }
+    }
 
     .search{
       flex:1;
@@ -539,20 +562,6 @@
     .docPage{ max-width: 980px; margin: 0 auto; }
     .hint{ font-size:12px; color:var(--muted); line-height:1.55; }
 
-    pre{
-      background: color-mix(in oklab, var(--panel2) 80%, #000);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
-      overflow:auto;
-      color: var(--ink);
-    }
-    body[class*="theme-glass-"] pre{
-      border-color: var(--glassBorder);
-      background: color-mix(in oklab, var(--panel2) 55%, transparent);
-    }
-    code{ font-family: var(--mono); font-size: 12.5px; }
-
     .modalBack{
       position:fixed; inset:0;
       background: rgba(0,0,0,.35);
@@ -622,41 +631,26 @@
     }
     .ctx .menuItem{ padding:10px 10px; border-radius: 12px; }
 
-    /* ============ FULL-PAGE LANDING (NOT FLOAT) ============ */
-    .landingFull{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-    }
+    /* ============ FULL-PAGE LANDING ============ */
+    .landingFull{ min-height:100vh; display:flex; flex-direction:column; }
     .landingTop{
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 1200px; margin: 0 auto;
       padding: 18px 16px 0;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
     }
     .landingTop .wordmark{
-      font-family: var(--serif);
-      font-weight: 950;
-      letter-spacing: .2px;
-      font-size: 16px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
     }
-    .landingTop .mini{
-      color:var(--muted);
-      font-size:12px;
-    }
+    .landingTop .mini{ color:var(--muted); font-size:12px; }
 
     .landingMain{
-      flex:1;
-      max-width: 1200px;
-      margin: 0 auto;
+      flex:1; max-width: 1200px; margin: 0 auto;
       padding: 18px 16px 40px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 18px;
-      align-items: stretch;
+      display:grid; grid-template-columns: 1.1fr .9fr;
+      gap: 18px; align-items: stretch;
     }
 
     .heroPanel{
@@ -687,22 +681,9 @@
       margin: 0 0 10px;
       letter-spacing: .2px;
     }
-    .heroSub{
-      margin:0;
-      color:var(--muted);
-      font-size: 13.5px;
-      line-height: 1.7;
-      max-width: 70ch;
-    }
+    .heroSub{ margin:0; color:var(--muted); font-size: 13.5px; line-height: 1.7; max-width: 70ch; }
 
-    .ctaRow{
-      margin-top: 18px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
+    .ctaRow{ margin-top: 18px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .ctaBig{
       border:1px solid color-mix(in oklab, var(--accent) 35%, var(--line));
       background: color-mix(in oklab, var(--accent) 18%, transparent);
@@ -719,12 +700,7 @@
     }
     .ctaBig:hover{ transform: translateY(-1px); }
     .ctaBig:active{ transform: translateY(0px); }
-
-    .ctaNote{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.6;
-    }
+    .ctaNote{ color:var(--muted); font-size:12px; line-height:1.6; }
 
     .sidePanel{
       border:1px solid var(--line);
@@ -754,13 +730,7 @@
       border-color: var(--glassBorder);
       background: color-mix(in oklab, var(--panel2) 65%, transparent);
     }
-
-    .feature b{
-      font-family: var(--serif);
-      font-weight: 950;
-      display:block;
-      margin-bottom: 6px;
-    }
+    .feature b{ font-family: var(--serif); font-weight: 950; display:block; margin-bottom: 6px; }
     .feature .tiny{ line-height:1.6; }
 
     .landingBottom{
@@ -778,6 +748,61 @@
 
     .hidden{ display:none !important; }
 
+    /* ======= TOAST (Saved flash) ======= */
+    .toastWrap{
+      position: fixed;
+      left: 0; right: 0;
+      bottom: 18px;
+      display:flex;
+      justify-content:center;
+      pointer-events:none;
+      z-index:140;
+    }
+    .toast{
+      pointer-events:none;
+      border:1px solid var(--line);
+      background: color-mix(in oklab, var(--panel2) 92%, var(--bg));
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+      display:flex;
+      align-items:center;
+      gap:10px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .18s ease, transform .18s ease;
+      font-size:12px;
+    }
+    body[class*="theme-glass-"] .toast{
+      background: color-mix(in oklab, var(--panel2) 65%, transparent);
+      border-color: var(--glassBorder);
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      box-shadow: var(--glassShadow);
+    }
+    .toast.show{
+      opacity: 1;
+      transform: translateY(0px);
+    }
+    .toastDot{
+      width:8px; height:8px;
+      border-radius:999px;
+      background: color-mix(in oklab, var(--accent) 80%, var(--ink));
+    }
+
+    /* ======= THEMED DIALOG ======= */
+    .dlg{ width:min(560px, 100%); }
+    .dlgMsg{ color:var(--muted); font-size:12.5px; line-height:1.65; }
+    .dlgInput{ margin-top:10px; }
+    .dlgActions{
+      margin-top:12px;
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
     @media (max-width: 1100px){
       .wrap{ grid-template-columns: 1fr; }
       .landingMain{ grid-template-columns: 1fr; }
@@ -786,7 +811,7 @@
     }
 
     @media print{
-      .topbar, .noPrint, .ctx, .modalBack, #landingView{ display:none !important; }
+      .topbar, .noPrint, .ctx, .modalBack, #landingView, .toastWrap{ display:none !important; }
       body{ background:#fff !important; color:#000 !important; }
       .wrap{ grid-template-columns: 1fr !important; max-width:none !important; padding:0 !important; }
       .pane:nth-child(1), .pane:nth-child(2){ display:none !important; }
@@ -800,12 +825,13 @@
 
 <body class="theme-paper-light">
 
-  <!-- FULL PAGE LANDING (NO FLOAT UI, NO SETTINGS ON LANDING) -->
+  <!-- FULL PAGE LANDING -->
   <main id="landingView" class="landingFull">
     <div class="landingTop">
-      <div>
-        <div class="wordmark">ConceptVaults</div>
-        <div class="mini">Minimal vault for content creation ideas • local-first</div>
+      <div class="wordmark" id="landingBrand" title="ConceptVault">
+        <!-- LOGO ONLY (replaces ConceptVaults text) -->
+        <img class="brandLogo landing" alt="ConceptVaults logo"
+             src="https://github.com/conceptvaultco/conceptvaultco.github.io/blob/main/logo.png?raw=true">
       </div>
       <div class="mini">Press <span class="pill" style="font-family:var(--mono);">Enter</span> to start</div>
     </div>
@@ -820,7 +846,7 @@
           </p>
 
           <div class="ctaRow">
-            <button class="ctaBig" id="startBtn">Get started <span style="font-family:var(--mono);">→</span></button>
+            <button class="ctaBig" id="startBtn" type="button">Get started <span style="font-family:var(--mono);">→</span></button>
           </div>
 
           <div class="ctaNote" style="margin-top:12px;">
@@ -851,8 +877,8 @@
           <div class="tiny">Open any file and press <span class="pill" style="font-family:var(--mono);">P</span> to print/export PDF.</div>
         </div>
         <div class="feature">
-          <b>Import PDFs & folders</b>
-          <div class="tiny">Import single PDFs or whole folders of PDFs and keep them stored locally.</div>
+          <b>Portable Backup ZIP</b>
+          <div class="tiny">Download a single ZIP that includes your vault JSON + all PDFs stored locally.</div>
         </div>
       </aside>
     </div>
@@ -863,12 +889,15 @@
     </div>
   </main>
 
-  <!-- APP TOPBAR (SETTINGS IS HERE, NOT ON LANDING) -->
+  <!-- APP TOPBAR -->
   <div class="topbar noPrint hidden" id="appTopbar">
     <div class="topbarInner">
       <div class="brand" id="brandHome" title="Go to landing">
-        <b>ConceptVaults</b>
-        <span id="viewBadge">vault</span>
+        <!-- LOGO ONLY (replaces ConceptVaults/vault text) -->
+        <img class="brandLogo" alt="ConceptVaults logo"
+             src="https://github.com/conceptvaultco/conceptvaultco.github.io/blob/main/logo.png?raw=true">
+        <!-- keep viewBadge in DOM for JS, but hidden -->
+        <span id="viewBadge" class="hidden">vault</span>
       </div>
 
       <div class="search" id="searchWrap">
@@ -902,6 +931,7 @@
             <button class="menuItem" id="exportBtn">Current file → PDF <span class="kbd">P</span></button>
             <div class="sepLine"></div>
             <button class="menuItem" id="exportVaultBtn">Vault JSON</button>
+            <button class="menuItem" id="exportZipBtn">Portable Backup ZIP</button>
           </div>
         </div>
 
@@ -971,7 +1001,7 @@
         </div>
       </div>
       <div class="pageBody" id="pageBody">
-        <div class="hint">Pick a folder → pick a file → View → Open (or double-click). Right-click folders/files for more.</div>
+        <div class="hint">Pick a folder → pick a file → View → Open (or double-click). Right-click anything for quick actions.</div>
       </div>
       <div class="toolbar noPrint" style="justify-content:space-between;">
         <div class="tiny">
@@ -1016,14 +1046,15 @@
           </div>
 
           <div class="modalCard">
-            <div style="font-family:var(--serif); font-weight:950; margin-bottom:6px;">Vault JSON</div>
-            <div class="tiny">Exports folders + files + settings. PDFs are stored locally (IndexedDB) and are referenced.</div>
+            <div style="font-family:var(--serif); font-weight:950; margin-bottom:6px;">Backups</div>
+            <div class="tiny">Vault JSON is small + fast. Portable ZIP includes PDFs too.</div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
               <button class="btn" id="exportVaultBtn2">Export Vault JSON</button>
               <button class="btn" id="importVaultBtn2">Import Vault JSON</button>
+              <button class="btn primary" id="exportZipBtn2">Portable Backup ZIP</button>
             </div>
             <div class="hint" style="margin-top:10px;">
-              If a PDF says “missing” after import, re-import that PDF file.
+              ZIP includes: <b>vault.json</b> + <b>pdfs/</b>. Nothing uploads anywhere.
             </div>
           </div>
         </div>
@@ -1071,21 +1102,48 @@
     </div>
   </div>
 
+  <!-- THEMED DIALOG -->
+  <div class="modalBack" id="dialogBack">
+    <div class="modal dlg">
+      <div class="modalHead">
+        <b id="dlgTitle">Dialog</b>
+        <button class="btn" id="dlgClose">Close</button>
+      </div>
+      <div class="modalBody">
+        <div class="dlgMsg" id="dlgMsg">—</div>
+        <div class="dlgInput" id="dlgInputWrap" style="display:none;">
+          <div class="labelUp" id="dlgInputLabel">Input</div>
+          <input type="text" id="dlgInput" placeholder="Type…" />
+        </div>
+        <div class="dlgActions" id="dlgActions"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Right-click context menu -->
   <div class="ctx" id="ctxMenu"></div>
 
+  <!-- Saved flash -->
+  <div class="toastWrap">
+    <div class="toast" id="toast">
+      <span class="toastDot"></span>
+      <span id="toastText">Saved</span>
+      <span class="pill" style="font-family:var(--mono);">Ctrl+S</span>
+    </div>
+  </div>
+
 <script>
+/* No functional changes below this line — only logo sizing + start robustness were added. */
 (function(){
   "use strict";
 
-  const LS_KEY = "conceptvaults_v6_fullpage_landing";
+  const LS_KEY = "conceptvaults_v7_toast_zip_dialogs";
   const DB_NAME = "conceptvaults_pdfs";
   const DB_STORE = "pdfs";
 
   const $ = (id)=>document.getElementById(id);
 
   const ui = {
-    // landing / app
     landingView: $("landingView"),
     vaultView: $("vaultView"),
     appTopbar: $("appTopbar"),
@@ -1144,6 +1202,9 @@
     importVaultBtn2: $("importVaultBtn2"),
     exportVaultBtn2: $("exportVaultBtn2"),
 
+    exportZipBtn: $("exportZipBtn"),
+    exportZipBtn2: $("exportZipBtn2"),
+
     openBtn: $("openBtn"),
     saveBtn: $("saveBtn"),
     saveBtn2: $("saveBtn2"),
@@ -1153,11 +1214,21 @@
     vaultJsonInput: $("vaultJsonInput"),
 
     ctxMenu: $("ctxMenu"),
+
+    dialogBack: $("dialogBack"),
+    dlgTitle: $("dlgTitle"),
+    dlgMsg: $("dlgMsg"),
+    dlgInputWrap: $("dlgInputWrap"),
+    dlgInputLabel: $("dlgInputLabel"),
+    dlgInput: $("dlgInput"),
+    dlgActions: $("dlgActions"),
+    dlgClose: $("dlgClose"),
+
+    toast: $("toast"),
+    toastText: $("toastText"),
   };
 
-  function uid(prefix="id"){
-    return prefix + "_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
-  }
+  function uid(prefix="id"){ return prefix + "_" + Math.random().toString(16).slice(2) + Date.now().toString(16); }
   function now(){ return new Date().toISOString(); }
   function fmt(iso){
     try{
@@ -1170,8 +1241,7 @@
       .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
       .replaceAll('"',"&quot;").replaceAll("'","&#039;");
   }
-  function downloadText(filename, text, mime){
-    const blob = new Blob([text], { type: mime || "text/plain" });
+  function downloadBlob(filename, blob){
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -1181,7 +1251,9 @@
     a.remove();
     setTimeout(()=>URL.revokeObjectURL(url), 2000);
   }
-
+  function downloadText(filename, text, mime){
+    downloadBlob(filename, new Blob([text], { type: mime || "text/plain" }));
+  }
   function isTypingTarget(el){
     if(!el) return false;
     const tag = (el.tagName || "").toLowerCase();
@@ -1190,18 +1262,124 @@
     return false;
   }
 
-  /* ---------- Views ---------- */
+  let toastTimer = null;
+  function showToast(message){
+    ui.toastText.textContent = message || "Saved";
+    ui.toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> ui.toast.classList.remove("show"), 1100);
+  }
+
+  function closeDialog(){
+    ui.dialogBack.style.display = "none";
+    ui.dlgActions.innerHTML = "";
+    ui.dlgInputWrap.style.display = "none";
+    ui.dlgInput.value = "";
+  }
+  ui.dlgClose.onclick = closeDialog;
+  ui.dialogBack.addEventListener("click", (e)=>{ if(e.target===ui.dialogBack) closeDialog(); });
+
+  function openDialogBase({title, msg, showInput, inputLabel, inputPlaceholder, inputValue, actions}){
+    ui.dlgTitle.textContent = title || "Dialog";
+    ui.dlgMsg.textContent = msg || "";
+    ui.dlgInputWrap.style.display = showInput ? "block" : "none";
+    ui.dlgInputLabel.textContent = inputLabel || "Input";
+    ui.dlgInput.placeholder = inputPlaceholder || "Type…";
+    ui.dlgInput.value = inputValue || "";
+    ui.dlgActions.innerHTML = "";
+    actions.forEach(a=>{
+      const b = document.createElement("button");
+      b.className = "btn" + (a.kind==="primary" ? " primary" : a.kind==="danger" ? " danger" : "");
+      b.textContent = a.label;
+      b.onclick = a.onClick;
+      ui.dlgActions.appendChild(b);
+    });
+    ui.dialogBack.style.display = "flex";
+    if(showInput){
+      setTimeout(()=> ui.dlgInput.focus(), 0);
+      setTimeout(()=> ui.dlgInput.select(), 0);
+    }
+  }
+
+  function modalAlert(title, msg){
+    return new Promise((resolve)=>{
+      openDialogBase({
+        title, msg,
+        showInput:false,
+        actions:[{ label:"OK", kind:"primary", onClick:()=>{ closeDialog(); resolve(); } }]
+      });
+    });
+  }
+  function modalConfirm(title, msg, danger=false){
+    return new Promise((resolve)=>{
+      openDialogBase({
+        title, msg,
+        showInput:false,
+        actions:[
+          { label:"Cancel", kind:"", onClick:()=>{ closeDialog(); resolve(false); } },
+          { label: danger ? "Delete" : "Confirm", kind: danger ? "danger" : "primary", onClick:()=>{ closeDialog(); resolve(true); } }
+        ]
+      });
+    });
+  }
+  function modalPrompt(title, msg, defaultValue="", placeholder="Type…"){
+    return new Promise((resolve)=>{
+      openDialogBase({
+        title, msg,
+        showInput:true,
+        inputLabel:"Name",
+        inputPlaceholder:placeholder,
+        inputValue:defaultValue,
+        actions:[
+          { label:"Cancel", kind:"", onClick:()=>{ closeDialog(); resolve(null); } },
+          { label:"Save", kind:"primary", onClick:()=>{
+              const v = (ui.dlgInput.value || "").trim();
+              closeDialog();
+              resolve(v ? v : null);
+            }
+          }
+        ]
+      });
+
+      const onKey = (e)=>{
+        if(ui.dialogBack.style.display !== "flex") return;
+        if(e.key==="Enter"){
+          e.preventDefault();
+          const v = (ui.dlgInput.value || "").trim();
+          closeDialog();
+          document.removeEventListener("keydown", onKey);
+          resolve(v ? v : null);
+        }
+      };
+      document.addEventListener("keydown", onKey, {once:false});
+      const obs = new MutationObserver(()=>{
+        if(ui.dialogBack.style.display !== "flex"){
+          document.removeEventListener("keydown", onKey);
+          obs.disconnect();
+        }
+      });
+      obs.observe(ui.dialogBack, { attributes:true, attributeFilter:["style"] });
+    });
+  }
+
   function setView(view){
     const isLanding = view === "landing";
     ui.landingView.classList.toggle("hidden", !isLanding);
     ui.vaultView.classList.toggle("hidden", isLanding);
     ui.appTopbar.classList.toggle("hidden", isLanding);
-
     ui.searchWrap.style.display = isLanding ? "none" : "flex";
     if(ui.viewBadge) ui.viewBadge.textContent = isLanding ? "landing" : "vault";
   }
 
-  /* ---------- IndexedDB ---------- */
+  // Robust "go vault" so Enter and button always work even if something tries to block the event.
+  function goVault(){
+    try{ setView("vault"); }
+    catch(e){
+      console.error(e);
+      modalAlert("Couldn’t open vault", "A script error prevented switching views. Check DevTools → Console for the error.");
+    }
+  }
+
   function idbOpen(){
     return new Promise((resolve, reject)=>{
       const req = indexedDB.open(DB_NAME, 1);
@@ -1249,8 +1427,25 @@
     });
     db.close();
   }
+  async function idbGetAllPdfs(){
+    const db = await idbOpen();
+    const all = await new Promise((resolve, reject)=>{
+      const tx = db.transaction(DB_STORE, "readonly");
+      const store = tx.objectStore(DB_STORE);
+      const out = [];
+      const req = store.openCursor();
+      req.onsuccess = ()=>{
+        const cur = req.result;
+        if(!cur){ resolve(out); return; }
+        out.push(cur.value);
+        cur.continue();
+      };
+      req.onerror = ()=> reject(req.error);
+    });
+    db.close();
+    return all;
+  }
 
-  /* ---------- State ---------- */
   function seedState(){
     const ideas     = { id: uid("fld"), name:"Ideas",        parentId:null, createdAt: now() };
     const drafts    = { id: uid("fld"), name:"Drafts",       parentId:null, createdAt: now() };
@@ -1349,7 +1544,6 @@
     ui.dirtyMark.textContent = dirty ? "Unsaved changes" : "";
   }
 
-  /* Bug 1 fix: prune empty junk folders on launch */
   function folderChildren(parentId){
     return state.folders
       .filter(f => (f.parentId || null) === (parentId || null))
@@ -1392,7 +1586,6 @@
     }
   }
 
-  /* Theme */
   function applyTheme(){
     const id = settings.themeId || "paper-light";
     document.body.className = "theme-" + id;
@@ -1401,9 +1594,7 @@
 
   function getFolder(id){ return state.folders.find(f=>f.id===id) || null; }
   function getFile(id){ return state.files.find(f=>f.id===id) || null; }
-  function folderFileCount(folderId){
-    return state.files.filter(x=>x.folderId===folderId).length;
-  }
+  function folderFileCount(folderId){ return state.files.filter(x=>x.folderId===folderId).length; }
   function ensureFolderOpen(folderId){
     if(state.ui.folderOpen[folderId] === undefined) state.ui.folderOpen[folderId] = true;
     return !!state.ui.folderOpen[folderId];
@@ -1699,13 +1890,14 @@
     const ed = $("jsonEditor");
     if(ed) ed.addEventListener("input", ()=> setDirty(true));
 
-    $("jsonFormatBtn").onclick = ()=>{
+    $("jsonFormatBtn").onclick = async ()=>{
       try{
         const obj = JSON.parse(ed.value || "{}");
         ed.value = JSON.stringify(obj, null, 2);
         setDirty(true);
+        await modalAlert("Formatted", "JSON was formatted.");
       }catch(e){
-        alert("Invalid JSON: " + (e && e.message ? e.message : "parse error"));
+        await modalAlert("Invalid JSON", (e && e.message) ? e.message : "parse error");
       }
     };
 
@@ -1754,12 +1946,13 @@
 
     $("replacePdfBtn").onclick = ()=>{ ui.pdfInput.value=""; ui.pdfInput.click(); };
     $("removePdfBtn").onclick = async ()=>{
-      const ok = confirm("Delete this PDF from local storage? (Cannot be undone)");
+      const ok = await modalConfirm("Delete PDF", "Delete this PDF from local storage? This cannot be undone.", true);
       if(!ok) return;
       if(file.pdfId) await idbDeletePdf(file.pdfId);
       file.pdfId = null;
       file.updatedAt = now();
       saveState();
+      showToast("Saved");
       renderExplorer();
     };
   }
@@ -1789,6 +1982,7 @@
 
     f.updatedAt = now();
     saveState();
+    showToast("Saved");
     renderExplorer();
   }
 
@@ -1799,21 +1993,23 @@
     renderExplorer();
   }
 
-  function newFolder(parentId){
-    const name = prompt("Folder name:");
+  async function newFolder(parentId){
+    const name = await modalPrompt("New folder", "Folder name:", "", "Folder name…");
     if(!name) return;
     state.folders.push({ id: uid("fld"), name: name.trim().slice(0,60), parentId: parentId || null, createdAt: now() });
     saveState();
+    showToast("Saved");
     renderExplorer();
   }
 
-  function renameFolder(){
+  async function renameFolder(){
     const f = getFolder(activeFolderId);
     if(!f) return;
-    const name = prompt("Rename folder:", f.name);
+    const name = await modalPrompt("Rename folder", "Choose a new folder name:", f.name, "Folder name…");
     if(!name) return;
     f.name = name.trim().slice(0,60);
     saveState();
+    showToast("Saved");
     renderExplorer();
   }
 
@@ -1822,7 +2018,7 @@
     if(!f) return;
 
     const ids = descendants(f.id);
-    const ok = confirm("Delete this folder and ALL subfolders + files inside? (Cannot be undone)");
+    const ok = await modalConfirm("Delete folder", "Delete this folder and ALL subfolders + files inside? This cannot be undone.", true);
     if(!ok) return;
 
     const filesToDelete = state.files.filter(x=>ids.includes(x.folderId));
@@ -1840,11 +2036,12 @@
     openFileId = null;
 
     saveState();
+    showToast("Saved");
     renderExplorer();
   }
 
-  function newConcept(){
-    const name = prompt("Concept name:", "Untitled concept");
+  async function newConcept(){
+    const name = await modalPrompt("New concept", "Concept name:", "Untitled concept", "Concept name…");
     if(!name) return;
     const f = {
       id: uid("f"),
@@ -1856,11 +2053,12 @@
     };
     state.files.unshift(f);
     saveState();
+    showToast("Saved");
     selectedFileId = f.id;
     openSelectedFile();
   }
-  function newNote(){
-    const name = prompt("Note name:", "Untitled note");
+  async function newNote(){
+    const name = await modalPrompt("New note", "Note name:", "Untitled note", "Note name…");
     if(!name) return;
     const f = {
       id: uid("f"),
@@ -1872,11 +2070,12 @@
     };
     state.files.unshift(f);
     saveState();
+    showToast("Saved");
     selectedFileId = f.id;
     openSelectedFile();
   }
-  function newJson(){
-    const name = prompt("JSON file name:", "file.json");
+  async function newJson(){
+    const name = await modalPrompt("New JSON", "JSON file name:", "file.json", "file.json");
     if(!name) return;
     const finalName = name.toLowerCase().endsWith(".json") ? name.trim() : (name.trim() + ".json");
     const f = {
@@ -1889,21 +2088,23 @@
     };
     state.files.unshift(f);
     saveState();
+    showToast("Saved");
     selectedFileId = f.id;
     openSelectedFile();
   }
 
-  function renameFile(){
+  async function renameFile(){
     const f = getFile(selectedFileId);
     if(!f) return;
-    const name = prompt("Rename file:", f.name || "Untitled");
+    const name = await modalPrompt("Rename file", "Choose a new file name:", f.name || "Untitled", "File name…");
     if(!name) return;
     f.name = name.trim().slice(0,100);
     f.updatedAt = now();
     saveState();
+    showToast("Saved");
     renderExplorer();
   }
-  function duplicateFile(){
+  async function duplicateFile(){
     const f = getFile(selectedFileId);
     if(!f) return;
     const copy = JSON.parse(JSON.stringify(f));
@@ -1913,13 +2114,14 @@
     copy.updatedAt = now();
     state.files.unshift(copy);
     saveState();
+    showToast("Saved");
     selectedFileId = copy.id;
     renderExplorer();
   }
   async function deleteFile(){
     const f = getFile(selectedFileId);
     if(!f) return;
-    const ok = confirm("Delete this file? (Cannot be undone)");
+    const ok = await modalConfirm("Delete file", "Delete this file? This cannot be undone.", true);
     if(!ok) return;
 
     if(f.type==="pdf" && f.pdfId){
@@ -1931,11 +2133,11 @@
     selectedFileId = null;
 
     saveState();
+    showToast("Saved");
     renderExplorer();
   }
 
   function baseName(filename){ return filename.replace(/\.pdf$/i,""); }
-
   function bestImportRootName(files){
     for(const f of files){
       const p = f.webkitRelativePath || "";
@@ -1946,7 +2148,6 @@
     }
     return "Imported PDFs";
   }
-
   function ensureFolderByName(name){
     let f = state.folders.find(x=>String(x.name||"").toLowerCase() === String(name||"").toLowerCase() && (x.parentId||null)===null);
     if(!f){
@@ -1985,6 +2186,7 @@
     }
 
     saveState();
+    showToast("Saved");
     const newest = state.files[0];
     if(newest){
       activeFolderId = newest.folderId;
@@ -2009,9 +2211,9 @@
     downloadText("conceptvaults-vault.json", JSON.stringify(payload, null, 2), "application/json");
   }
 
-  function importVaultJsonFile(file){
+  async function importVaultJsonFile(file){
     const reader = new FileReader();
-    reader.onload = ()=>{
+    reader.onload = async ()=>{
       try{
         const payload = JSON.parse(String(reader.result || "{}"));
         if(!payload || !payload.state) throw new Error("Missing state");
@@ -2035,9 +2237,9 @@
         applyTheme();
         renderExplorer();
 
-        alert("Vault imported. PDFs are local; re-import any missing ones.");
+        await modalAlert("Imported", "Vault imported. PDFs are local; re-import any missing ones.");
       }catch(e){
-        alert("Import failed: " + (e && e.message ? e.message : "Invalid JSON"));
+        await modalAlert("Import failed", (e && e.message ? e.message : "Invalid JSON"));
       }
     };
     reader.readAsText(file);
@@ -2048,9 +2250,164 @@
     window.print();
   }
 
-  function closeAllMenus(){
-    document.querySelectorAll(".menu").forEach(m=> m.style.display="none");
+  function u16(n){ return [n & 255, (n>>>8) & 255]; }
+  function u32(n){ return [n & 255, (n>>>8) & 255, (n>>>16) & 255, (n>>>24) & 255]; }
+  function strBytes(s){ return Array.from(new TextEncoder().encode(s)); }
+  function concatBytes(parts){
+    let len = 0;
+    parts.forEach(p=>len += p.length);
+    const out = new Uint8Array(len);
+    let off = 0;
+    parts.forEach(p=>{ out.set(p, off); off += p.length; });
+    return out;
   }
+
+  const CRC_TABLE = (function(){
+    const t = new Uint32Array(256);
+    for(let i=0;i<256;i++){
+      let c = i;
+      for(let k=0;k<8;k++){
+        c = (c & 1) ? (0xEDB88320 ^ (c>>>1)) : (c>>>1);
+      }
+      t[i] = c>>>0;
+    }
+    return t;
+  })();
+  function crc32(u8){
+    let c = 0xFFFFFFFF;
+    for(let i=0;i<u8.length;i++){
+      c = CRC_TABLE[(c ^ u8[i]) & 255] ^ (c>>>8);
+    }
+    return (c ^ 0xFFFFFFFF)>>>0;
+  }
+  function dosTimeDate(date){
+    const d = date instanceof Date ? date : new Date();
+    let time =
+      ((d.getHours() & 31) << 11) |
+      ((d.getMinutes() & 63) << 5) |
+      ((Math.floor(d.getSeconds()/2) & 31));
+    let year = d.getFullYear();
+    if(year < 1980) year = 1980;
+    let datev =
+      (((year - 1980) & 127) << 9) |
+      (((d.getMonth()+1) & 15) << 5) |
+      (d.getDate() & 31);
+    return { time, date: datev };
+  }
+
+  async function buildPortableBackupZip(){
+    const payload = {
+      version: 1,
+      exportedAt: now(),
+      app: "ConceptVaults",
+      state: {
+        folders: state.folders,
+        files: state.files,
+        settings: state.settings,
+        ui: state.ui
+      }
+    };
+    const vaultU8 = new TextEncoder().encode(JSON.stringify(payload, null, 2));
+    const pdfs = await idbGetAllPdfs();
+
+    const files = [];
+    files.push({ name: "vault.json", data: new Uint8Array(vaultU8) });
+
+    for(const p of pdfs){
+      const safeName = String(p.name || (p.id + ".pdf"))
+        .replaceAll("\\","/").split("/").pop()
+        .replace(/[<>:"|?*\x00-\x1F]/g, "_")
+        .slice(0,120) || (p.id + ".pdf");
+      files.push({ name: "pdfs/" + safeName, data: new Uint8Array(p.buf) });
+    }
+
+    const localParts = [];
+    const centralParts = [];
+    let offset = 0;
+    const dt = dosTimeDate(new Date());
+
+    for(const f of files){
+      const nameBytes = new Uint8Array(strBytes(f.name));
+      const data = f.data instanceof Uint8Array ? f.data : new Uint8Array(f.data);
+      const c = crc32(data);
+      const size = data.length;
+
+      const localHeader = concatBytes([
+        new Uint8Array(u32(0x04034b50)),
+        new Uint8Array(u16(20)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(dt.time)),
+        new Uint8Array(u16(dt.date)),
+        new Uint8Array(u32(c)),
+        new Uint8Array(u32(size)),
+        new Uint8Array(u32(size)),
+        new Uint8Array(u16(nameBytes.length)),
+        new Uint8Array(u16(0)),
+        nameBytes
+      ]);
+
+      localParts.push(localHeader, data);
+
+      const centralHeader = concatBytes([
+        new Uint8Array(u32(0x02014b50)),
+        new Uint8Array(u16(20)),
+        new Uint8Array(u16(20)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(dt.time)),
+        new Uint8Array(u16(dt.date)),
+        new Uint8Array(u32(c)),
+        new Uint8Array(u32(size)),
+        new Uint8Array(u32(size)),
+        new Uint8Array(u16(nameBytes.length)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u16(0)),
+        new Uint8Array(u32(0)),
+        new Uint8Array(u32(offset)),
+        nameBytes
+      ]);
+      centralParts.push(centralHeader);
+
+      offset += localHeader.length + data.length;
+    }
+
+    const centralDir = concatBytes(centralParts.map(x=>x));
+    const centralOffset = offset;
+    const centralSize = centralDir.length;
+
+    const eocd = concatBytes([
+      new Uint8Array(u32(0x06054b50)),
+      new Uint8Array(u16(0)),
+      new Uint8Array(u16(0)),
+      new Uint8Array(u16(files.length)),
+      new Uint8Array(u16(files.length)),
+      new Uint8Array(u32(centralSize)),
+      new Uint8Array(u32(centralOffset)),
+      new Uint8Array(u16(0))
+    ]);
+
+    const zipU8 = concatBytes([...localParts, centralDir, eocd]);
+    return new Blob([zipU8], { type: "application/zip" });
+  }
+
+  async function exportPortableZip(){
+    try{
+      if(dirty) saveOpenFile();
+      closeAllMenus();
+      closeCtxMenu();
+      showToast("Building ZIP…");
+      const zip = await buildPortableBackupZip();
+      downloadBlob("conceptvaults-backup.zip", zip);
+      showToast("Saved");
+    }catch(e){
+      await modalAlert("Backup failed", (e && e.message) ? e.message : "Could not build ZIP.");
+    }
+  }
+
+  function closeAllMenus(){ document.querySelectorAll(".menu").forEach(m=> m.style.display="none"); }
   function toggleMenu(id){
     const el = $(id);
     const open = el.style.display === "block";
@@ -2076,6 +2433,7 @@
     settings.themeId = ui.themeSelect.value;
     applyTheme();
     saveState();
+    showToast("Saved");
   };
 
   function openNew(){ ui.newBack.style.display = "flex"; closeAllMenus(); closeCtxMenu(); }
@@ -2085,20 +2443,20 @@
   ui.closeNew.onclick = closeNew;
   ui.newBack.addEventListener("click", (e)=>{ if(e.target===ui.newBack) closeNew(); });
 
-  ui.newConceptBtn.onclick = ()=>{ newConcept(); closeNew(); };
-  ui.newNoteBtn.onclick = ()=>{ newNote(); closeNew(); };
-  ui.newJsonBtn.onclick = ()=>{ newJson(); closeNew(); };
-  ui.newFolderBtn.onclick = ()=>{ newFolder(null); closeNew(); };
-  ui.newSubFolderBtn.onclick = ()=>{ newFolder(activeFolderId); closeNew(); };
+  ui.newConceptBtn.onclick = async ()=>{ await newConcept(); closeNew(); };
+  ui.newNoteBtn.onclick = async ()=>{ await newNote(); closeNew(); };
+  ui.newJsonBtn.onclick = async ()=>{ await newJson(); closeNew(); };
+  ui.newFolderBtn.onclick = async ()=>{ await newFolder(null); closeNew(); };
+  ui.newSubFolderBtn.onclick = async ()=>{ await newFolder(activeFolderId); closeNew(); };
 
-  ui.addFolderBtn.onclick = ()=> newFolder(null);
-  ui.addSubFolderBtn.onclick = ()=> newFolder(activeFolderId);
-  ui.renameFolderBtn.onclick = renameFolder;
-  ui.deleteFolderBtn.onclick = deleteFolder;
+  ui.addFolderBtn.onclick = async ()=> await newFolder(null);
+  ui.addSubFolderBtn.onclick = async ()=> await newFolder(activeFolderId);
+  ui.renameFolderBtn.onclick = async ()=> await renameFolder();
+  ui.deleteFolderBtn.onclick = async ()=> await deleteFolder();
 
-  ui.renameFileBtn.onclick = renameFile;
-  ui.duplicateBtn.onclick = duplicateFile;
-  ui.deleteBtn.onclick = deleteFile;
+  ui.renameFileBtn.onclick = async ()=> await renameFile();
+  ui.duplicateBtn.onclick = async ()=> await duplicateFile();
+  ui.deleteBtn.onclick = async ()=> await deleteFile();
 
   ui.openBtn.onclick = ()=>{ openSelectedFile(); closeAllMenus(); };
   ui.saveBtn.onclick = ()=>{ if(openFileId) saveOpenFile(); closeAllMenus(); };
@@ -2124,6 +2482,9 @@
   ui.exportVaultBtn.onclick = ()=>{ exportVaultJson(); closeAllMenus(); };
   ui.exportVaultBtn2.onclick = exportVaultJson;
 
+  ui.exportZipBtn.onclick = exportPortableZip;
+  ui.exportZipBtn2.onclick = exportPortableZip;
+
   ui.vaultJsonInput.addEventListener("change", ()=>{
     const f = (ui.vaultJsonInput.files||[])[0];
     if(!f) return;
@@ -2131,7 +2492,7 @@
   });
 
   ui.wipeBtn.onclick = async ()=>{
-    const ok = confirm("Wipe ALL ConceptVaults local data? (Cannot be undone)");
+    const ok = await modalConfirm("Wipe all local data", "Wipe ALL ConceptVaults local data? This cannot be undone.", true);
     if(!ok) return;
     try{
       const db = await idbOpen();
@@ -2149,12 +2510,10 @@
 
   ui.q.addEventListener("input", ()=> renderExplorer());
 
-  /* Right click context menu */
   function closeCtxMenu(){
     ui.ctxMenu.style.display = "none";
     ui.ctxMenu.innerHTML = "";
   }
-
   function openCtxMenu(x, y, itemsHtml){
     ui.ctxMenu.innerHTML = itemsHtml;
     ui.ctxMenu.style.display = "block";
@@ -2168,20 +2527,18 @@
     ui.ctxMenu.style.top = py + "px";
 
     ui.ctxMenu.querySelectorAll("[data-act]").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
+      btn.addEventListener("click", async ()=>{
         const act = btn.getAttribute("data-act");
         const id = btn.getAttribute("data-id");
         closeCtxMenu();
-        runCtxAction(act, id);
+        await runCtxAction(act, id);
       });
     });
   }
-
   function ctxItem(label, act, id, kbd){
     return '<button class="menuItem" data-act="'+esc(act)+'" data-id="'+esc(id||"")+'">'+esc(label)+'<span class="kbd">'+esc(kbd||"")+'</span></button>';
   }
   function ctxSep(){ return '<div class="sepLine"></div>'; }
-
   function buildFolderCtx(folderId){
     return [
       ctxItem("New file…", "new_popup", folderId, ""),
@@ -2191,7 +2548,6 @@
       ctxItem("Delete folder", "delete_folder", folderId, ""),
     ].join("");
   }
-
   function buildFileCtx(fileId){
     return [
       ctxItem("Open", "open_file", fileId, "↵"),
@@ -2203,7 +2559,6 @@
       ctxItem("Export current → PDF", "export_pdf", fileId, "P"),
     ].join("");
   }
-
   function buildEmptyFilesCtx(){
     return [
       ctxItem("New…", "new_popup", "", ""),
@@ -2212,17 +2567,16 @@
       ctxItem("Import Folder (PDFs)", "import_folder", "", ""),
     ].join("");
   }
-
-  function runCtxAction(act, id){
+  async function runCtxAction(act, id){
     if(act==="new_popup"){ openNew(); return; }
-    if(act==="new_subfolder"){ newFolder(id || activeFolderId); return; }
-    if(act==="rename_folder"){ activeFolderId = id; renameFolder(); return; }
-    if(act==="delete_folder"){ activeFolderId = id; deleteFolder(); return; }
+    if(act==="new_subfolder"){ await newFolder(id || activeFolderId); return; }
+    if(act==="rename_folder"){ activeFolderId = id; await renameFolder(); return; }
+    if(act==="delete_folder"){ activeFolderId = id; await deleteFolder(); return; }
 
     if(act==="open_file"){ selectedFileId = id; openSelectedFile(); return; }
-    if(act==="rename_file"){ selectedFileId = id; renameFile(); return; }
-    if(act==="dup_file"){ selectedFileId = id; duplicateFile(); return; }
-    if(act==="del_file"){ selectedFileId = id; deleteFile(); return; }
+    if(act==="rename_file"){ selectedFileId = id; await renameFile(); return; }
+    if(act==="dup_file"){ selectedFileId = id; await duplicateFile(); return; }
+    if(act==="del_file"){ selectedFileId = id; await deleteFile(); return; }
 
     if(act==="export_pdf"){ exportPdf(); return; }
     if(act==="import_pdfs"){ ui.pdfInput.value=""; ui.pdfInput.click(); return; }
@@ -2232,7 +2586,6 @@
   document.addEventListener("click", ()=> closeCtxMenu());
   document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeCtxMenu(); });
 
-  /* Keybinds (Bug 2 fix: no double-tap F. Folder is Ctrl+Shift+F.) */
   window.addEventListener("keydown", (e)=>{
     if(isTypingTarget(document.activeElement)) return;
 
@@ -2240,13 +2593,12 @@
     const mod = isMac ? e.metaKey : e.ctrlKey;
 
     if(e.key === "Enter" && !mod && !e.altKey && !e.metaKey){
-      // Enter on landing starts
       if(!ui.landingView.classList.contains("hidden")){
-        setView("vault");
+        e.preventDefault();
+        goVault();
         return;
       }
     }
-
     if(mod && e.key.toLowerCase()==="s"){
       e.preventDefault();
       if(openFileId) saveOpenFile();
@@ -2278,20 +2630,16 @@
     }
   });
 
-  /* Navigation */
-  ui.startBtn.onclick = ()=> setView("vault");
+  // Start / navigation (robust)
+  ui.startBtn.addEventListener("click", (e)=>{ e.preventDefault(); e.stopPropagation(); goVault(); });
   ui.goLandingBtn.onclick = ()=> setView("landing");
   ui.brandHome.onclick = ()=> setView("landing");
 
-  /* init */
   pruneEmptyFoldersIterative();
   saveState();
   applyTheme();
   renderExplorer();
-
-  // Start on landing always (as requested)
   setView("landing");
-
 })();
 </script>
 </body>
