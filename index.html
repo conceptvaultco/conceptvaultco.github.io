@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>ConceptVault</title>
+  <title>ConceptVaults</title>
 
   <!-- FAVICON -->
   <link rel="icon" type="image/png" href="https://github.com/conceptvaultco/conceptvaultco.github.io/blob/main/favicon.png?raw=true"/>
@@ -104,6 +104,18 @@
       pointer-events:none;
       z-index:-1;
     }
+
+    /* ===== WORKBENCH FULLSCREEN ===== */
+    body.workbenchFull{ overflow:hidden; }
+    body.workbenchFull .wrap{
+      max-width:none !important;
+      grid-template-columns: 1fr !important;
+      min-height: calc(100vh - 64px);
+    }
+    body.workbenchFull #folderPane,
+    body.workbenchFull #filesPane{ display:none !important; }
+    body.workbenchFull #editorPane{ min-height: calc(100vh - 64px); }
+    body.workbenchFull .pageBody{ max-height: calc(100vh - 64px - 140px); }
 
     /* TOPBAR (APP ONLY) */
     .topbar{
@@ -748,6 +760,115 @@
 
     .hidden{ display:none !important; }
 
+    /* ======= ROADMAP EDITOR ======= */
+    .rmTopRow{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+      margin-top:10px;
+    }
+    .rmBoard{
+      margin-top:12px;
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+    }
+    .rmCol{
+      min-width: 280px;
+      max-width: 420px;
+      flex: 1 0 280px;
+      scroll-snap-align: start;
+      border:1px solid var(--line);
+      background: var(--panel);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    body[class*="theme-glass-"] .rmCol{
+      background: color-mix(in oklab, var(--panel) 75%, transparent);
+      border-color: var(--glassBorder);
+      backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      -webkit-backdrop-filter: blur(var(--glassBlur)) saturate(var(--glassSat));
+      box-shadow: var(--glassShadow);
+    }
+    .rmColHead{
+      padding:10px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex; gap:8px; align-items:center;
+      background: color-mix(in oklab, var(--panel) 75%, var(--panel2));
+    }
+    body[class*="theme-glass-"] .rmColHead{
+      border-bottom-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 45%, transparent);
+    }
+    .rmColHead input{
+      font-family: var(--serif);
+      font-weight: 950;
+      border-radius: 12px;
+      padding:8px 10px;
+    }
+    .rmColBody{
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      min-height: 220px;
+    }
+    .rmItem{
+      display:flex; gap:8px; align-items:center;
+      border:1px solid var(--line);
+      background: var(--panel2);
+      border-radius: 12px;
+      padding:8px 8px;
+    }
+    body[class*="theme-glass-"] .rmItem{
+      border-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 70%, transparent);
+    }
+    .rmGrip{
+      width:18px; height:18px;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      user-select:none;
+      cursor: grab;
+    }
+    .rmBullet{
+      width:18px; height:18px;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-family: var(--mono);
+      color: var(--muted);
+      user-select:none;
+    }
+    .rmItem input{
+      border-radius: 10px;
+      padding:8px 10px;
+      flex:1;
+    }
+    .rmMiniBtn{
+      border-radius: 999px !important;
+      padding:7px 10px !important;
+      font-size: 11px !important;
+      white-space:nowrap;
+    }
+    .rmColFoot{
+      padding:10px;
+      border-top:1px solid var(--line);
+      display:flex; gap:8px; flex-wrap:wrap;
+      background: color-mix(in oklab, var(--soft) 70%, transparent);
+    }
+    body[class*="theme-glass-"] .rmColFoot{
+      border-top-color: var(--glassBorder);
+      background: color-mix(in oklab, var(--panel2) 35%, transparent);
+    }
+
+    .rmDragOver{
+      outline: 2px dashed color-mix(in oklab, var(--accent) 70%, var(--line));
+      outline-offset: -6px;
+    }
+
     /* ======= TOAST (Saved flash) ======= */
     .toastWrap{
       position: fixed;
@@ -808,6 +929,7 @@
       .landingMain{ grid-template-columns: 1fr; }
       .heroTitle{ font-size: 32px; }
       .brand{ min-width:unset; }
+      .rmCol{ min-width: 240px; }
     }
 
     @media print{
@@ -819,6 +941,7 @@
       textarea, input[type="text"], select{ border:1px solid #ddd !important; background:#fff !important; color:#000 !important; }
       .field{ border:1px solid #ddd !important; background:#fff !important; }
       pre{ background:#f5f5f5 !important; color:#000 !important; border:1px solid #ddd !important; }
+      .rmBoard{ overflow:visible !important; }
     }
   </style>
 </head>
@@ -828,7 +951,7 @@
   <!-- FULL PAGE LANDING -->
   <main id="landingView" class="landingFull">
     <div class="landingTop">
-      <div class="wordmark" id="landingBrand" title="ConceptVault">
+      <div class="wordmark" id="landingBrand" title="ConceptVaults">
         <!-- LOGO ONLY (replaces ConceptVaults text) -->
         <img class="brandLogo landing" alt="ConceptVaults logo"
              src="https://github.com/conceptvaultco/conceptvaultco.github.io/blob/main/logo.png?raw=true">
@@ -841,8 +964,8 @@
         <div>
           <h1 class="heroTitle">Write. Organize. Export.</h1>
           <p class="heroSub">
-            Keep your concepts, notes, PDFs, and templates in one place — structured like a file explorer.
-            Draft quickly, keep everything tidy, and export any idea to a clean PDF when you’re ready.
+            Keep your concepts, notes, roadmaps, PDFs, and templates in one place — structured like a file explorer.
+            Draft quickly, keep everything tidy, and export any idea to a clean PDF OR PNG when you’re ready.
           </p>
 
           <div class="ctaRow">
@@ -850,7 +973,7 @@
           </div>
 
           <div class="ctaNote" style="margin-top:12px;">
-            Inside the vault: create folders, add Concepts / Notes / JSON, import PDFs, right-click anything for quick actions.
+            Inside the vault: create folders, add Concepts / Notes / JSON / Roadmaps.
           </div>
         </div>
 
@@ -858,6 +981,8 @@
           <span class="pill">Folders</span>
           <span class="pill">Concept sheets</span>
           <span class="pill">Free notes</span>
+          <span class="pill">JSON templates</span>
+          <span class="pill">Roadmaps</span>
           <span class="pill">PDF library</span>
           <span class="pill">Export to PDF</span>
         </div>
@@ -866,11 +991,11 @@
       <aside class="sidePanel">
         <div class="feature">
           <b>Fast capture</b>
-          <div class="tiny">Make a concept or note in seconds. Use the New… popup and keep moving.</div>
+          <div class="tiny">Make a concept, note, JSON, or roadmap in seconds.</div>
         </div>
         <div class="feature">
           <b>Explorer layout</b>
-          <div class="tiny">Folders on the left, files in the middle, editor on the right. Right-click for power moves.</div>
+          <div class="tiny">Folders on the left, files in the middle, editor on the right. Right-click for quick actions.</div>
         </div>
         <div class="feature">
           <b>Export clean PDFs</b>
@@ -940,6 +1065,8 @@
           <div class="menu" id="menuView">
             <button class="menuItem" id="openBtn">Open selected <span class="kbd">↵</span></button>
             <button class="menuItem" id="saveBtn">Save <span class="kbd">Ctrl S</span></button>
+            <div class="sepLine"></div>
+            <button class="menuItem" id="toggleWorkbenchBtn">Fullscreen workbench <span class="kbd">Ctrl \</span></button>
           </div>
         </div>
 
@@ -951,7 +1078,7 @@
   <!-- Vault App -->
   <div id="vaultView" class="wrap hidden">
     <!-- Folders -->
-    <div class="pane">
+    <div class="pane" id="folderPane">
       <div class="paneHead">
         <div>
           <div class="paneTitle">Folders</div>
@@ -970,7 +1097,7 @@
     </div>
 
     <!-- Files -->
-    <div class="pane">
+    <div class="pane" id="filesPane">
       <div class="paneHead">
         <div>
           <div class="paneTitle">Files</div>
@@ -989,7 +1116,7 @@
     </div>
 
     <!-- Preview / Editor -->
-    <div class="pane">
+    <div class="pane" id="editorPane">
       <div class="previewHead">
         <div style="min-width:0;">
           <div class="crumbs" id="crumbs"></div>
@@ -997,6 +1124,7 @@
           <div class="pageMeta" id="pageMeta"></div>
         </div>
         <div class="noPrint" style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="workbenchFullBtn">Fullscreen</button>
           <button class="btn primary" id="saveBtn2">Save</button>
         </div>
       </div>
@@ -1009,6 +1137,7 @@
           <span class="pill" style="font-family:var(--mono);">Ctrl+N</span> New…
           • <span class="pill" style="font-family:var(--mono);">Ctrl+Shift+F</span> Folder
           • <span class="pill" style="font-family:var(--mono);">Ctrl+S</span> Save
+          • <span class="pill" style="font-family:var(--mono);">Ctrl+\</span> Fullscreen
         </div>
         <div class="tiny" id="dirtyMark"></div>
       </div>
@@ -1086,8 +1215,9 @@
               <button class="btn primary" id="newConceptBtn">+ Concept</button>
               <button class="btn" id="newNoteBtn">+ Note</button>
               <button class="btn" id="newJsonBtn">+ JSON</button>
+              <button class="btn" id="newRoadmapBtn">+ Roadmap</button>
             </div>
-            <div class="hint" style="margin-top:10px;">Concept = structured idea sheet. Note = free text. JSON = templates/checklists.</div>
+            <div class="hint" style="margin-top:10px;">Concept = structured idea sheet. Note = free text. JSON = templates/checklists. Roadmap = columns + bullets + export PNG/PDF.</div>
           </div>
           <div class="modalCard">
             <div style="font-family:var(--serif); font-weight:950; margin-bottom:6px;">Folders</div>
@@ -1133,11 +1263,11 @@
   </div>
 
 <script>
-/* No functional changes below this line — only logo sizing + start robustness were added. */
+/* Roadmaps + Workbench Fullscreen added. */
 (function(){
   "use strict";
 
-  const LS_KEY = "conceptvaults_v7_toast_zip_dialogs";
+  const LS_KEY = "conceptvaults_v8_roadmaps_fullscreen";
   const DB_NAME = "conceptvaults_pdfs";
   const DB_STORE = "pdfs";
 
@@ -1168,6 +1298,9 @@
     pageBody: $("pageBody"),
     dirtyMark: $("dirtyMark"),
 
+    workbenchFullBtn: $("workbenchFullBtn"),
+    toggleWorkbenchBtn: $("toggleWorkbenchBtn"),
+
     settingsTopBtn: $("settingsTopBtn"),
     settingsBack: $("settingsBack"),
     closeSettings: $("closeSettings"),
@@ -1190,6 +1323,7 @@
     newConceptBtn: $("newConceptBtn"),
     newNoteBtn: $("newNoteBtn"),
     newJsonBtn: $("newJsonBtn"),
+    newRoadmapBtn: $("newRoadmapBtn"),
     newFolderBtn: $("newFolderBtn"),
     newSubFolderBtn: $("newSubFolderBtn"),
 
@@ -1253,6 +1387,14 @@
   }
   function downloadText(filename, text, mime){
     downloadBlob(filename, new Blob([text], { type: mime || "text/plain" }));
+  }
+  function safeFileName(name, fallback="file"){
+    const base = (String(name||"").trim() || fallback)
+      .replaceAll("\\","/").split("/").pop()
+      .replace(/[<>:"|?*\x00-\x1F]/g, "_")
+      .replace(/\s+/g, " ")
+      .slice(0, 120);
+    return base || fallback;
   }
   function isTypingTarget(el){
     if(!el) return false;
@@ -1362,6 +1504,19 @@
     });
   }
 
+  let workbenchFull = false;
+  function setWorkbenchFull(on){
+    workbenchFull = !!on;
+    document.body.classList.toggle("workbenchFull", workbenchFull);
+    ui.workbenchFullBtn.textContent = workbenchFull ? "Exit full" : "Fullscreen";
+  }
+  function toggleWorkbenchFull(){
+    if(!ui.landingView.classList.contains("hidden")) return;
+    setWorkbenchFull(!workbenchFull);
+    closeAllMenus();
+    closeCtxMenu();
+  }
+
   function setView(view){
     const isLanding = view === "landing";
     ui.landingView.classList.toggle("hidden", !isLanding);
@@ -1369,6 +1524,7 @@
     ui.appTopbar.classList.toggle("hidden", isLanding);
     ui.searchWrap.style.display = isLanding ? "none" : "flex";
     if(ui.viewBadge) ui.viewBadge.textContent = isLanding ? "landing" : "vault";
+    if(isLanding) setWorkbenchFull(false);
   }
 
   // Robust "go vault" so Enter and button always work even if something tries to block the event.
@@ -1502,9 +1658,25 @@
       }, null, 2)
     };
 
+    const exRoadmap = {
+      id: uid("f"),
+      folderId: ideas.id,
+      type:"roadmap",
+      name:"Example roadmap",
+      createdAt: now(), updatedAt: now(),
+      data: {
+        title: "EXAMPLE ROADMAP",
+        columns: [
+          { title:"CURRENT", items:["Write here...","Write here...","Write here...","Write here...","Write here..."] },
+          { title:"NEXT", items:["Write here...","Write here...","Write here...","Write here...","Write here..."] },
+          { title:"FUTURE", items:["Write here...","Write here...","Write here...","Write here...","Write here..."] }
+        ]
+      }
+    };
+
     return {
       folders:[ideas, drafts, research, uploads, hooks, series, oneOffs],
-      files:[exConcept, exNote, exJson],
+      files:[exRoadmap, exConcept, exNote, exJson],
       settings:{ themeId:"paper-light" },
       ui:{ folderOpen:{} }
     };
@@ -1588,7 +1760,11 @@
 
   function applyTheme(){
     const id = settings.themeId || "paper-light";
-    document.body.className = "theme-" + id;
+    // preserve non-theme classes like workbenchFull
+    Array.from(document.body.classList).forEach(c=>{
+      if(String(c).startsWith("theme-")) document.body.classList.remove(c);
+    });
+    document.body.classList.add("theme-" + id);
     ui.themeSelect.value = id;
   }
 
@@ -1629,6 +1805,7 @@
     if(t==="note") return "N";
     if(t==="pdf") return "P";
     if(t==="json") return "J";
+    if(t==="roadmap") return "R";
     return "?";
   }
   function typeLabel(t){
@@ -1636,6 +1813,7 @@
     if(t==="note") return "Note";
     if(t==="pdf") return "PDF";
     if(t==="json") return "JSON";
+    if(t==="roadmap") return "Roadmap";
     return "File";
   }
 
@@ -1789,6 +1967,7 @@
     else if(file.type==="note") renderNotePage(file);
     else if(file.type==="json") renderJsonPage(file);
     else if(file.type==="pdf") renderPdfPage(file);
+    else if(file.type==="roadmap") renderRoadmapPage(file);
     else ui.pageBody.innerHTML = '<div class="hint">Unknown file type.</div>';
   }
 
@@ -1907,6 +2086,450 @@
     };
   }
 
+  function normalizeRoadmapData(d){
+    const out = (d && typeof d === "object") ? d : {};
+    if(!Array.isArray(out.columns)) out.columns = [];
+    if(!out.title) out.title = "Roadmap";
+    if(out.columns.length === 0){
+      out.columns = [
+        { title:"CURRENT", items:[] },
+        { title:"NEXT", items:[] },
+        { title:"FUTURE", items:[] }
+      ];
+    }
+    out.columns = out.columns.map(c=>{
+      const cc = (c && typeof c==="object") ? c : {};
+      if(!Array.isArray(cc.items)) cc.items = [];
+      cc.title = String(cc.title || "COLUMN").slice(0, 40);
+      cc.items = cc.items.map(x=>String(x||"").slice(0, 140)).filter(Boolean).slice(0, 80);
+      return cc;
+    }).slice(0, 10);
+    out.title = String(out.title || "Roadmap").slice(0, 80);
+    return out;
+  }
+
+  function renderRoadmapPage(file){
+    const d = normalizeRoadmapData(JSON.parse(JSON.stringify(file.data || {})));
+
+    const colHtml = d.columns.map((c, idx)=>{
+      const itemsHtml = (c.items||[]).map((t, j)=>{
+        return [
+          '<div class="rmItem" draggable="true" data-rm-item="1">',
+            '<span class="rmGrip" title="Drag">⋮⋮</span>',
+            '<span class="rmBullet">•</span>',
+            '<input type="text" class="rmItemText" value="'+esc(t)+'" placeholder="Item…"/>',
+            '<button class="btn rmMiniBtn danger" data-rm-act="delItem" title="Delete item">Del</button>',
+          '</div>'
+        ].join("");
+      }).join("");
+
+      return [
+        '<div class="rmCol" draggable="true" data-rm-col="1">',
+          '<div class="rmColHead">',
+            '<input type="text" class="rmColTitle" value="'+esc(c.title||"COLUMN")+'" placeholder="Column title…"/>',
+            '<button class="btn rmMiniBtn danger" data-rm-act="delCol" title="Delete column">Delete</button>',
+          '</div>',
+          '<div class="rmColBody">',
+            itemsHtml || '<div class="hint">No items yet. Add one below.</div>',
+          '</div>',
+          '<div class="rmColFoot">',
+            '<button class="btn rmMiniBtn primary" data-rm-act="addItem">+ Item</button>',
+          '</div>',
+        '</div>'
+      ].join("");
+    }).join("");
+
+    ui.pageBody.innerHTML = [
+      '<div class="docPage">',
+        '<div class="field">',
+          '<div class="labelUp">Roadmap title</div>',
+          '<input type="text" id="rm_title" value="'+esc(d.title||"Roadmap")+'" placeholder="Roadmap title…"/>',
+          '<div class="rmTopRow noPrint">',
+            '<button class="btn primary" id="rm_addCol">+ Column</button>',
+            '<button class="btn" id="rm_exportPng">Export PNG</button>',
+            '<button class="btn" id="rm_exportPdf">Export PDF</button>',
+            '<span class="pill">Drag columns/items to reorder</span>',
+          '</div>',
+          '<div class="hint" style="margin-top:10px;">Tip: PNG export makes a clean roadmap image. PDF export uses the normal print/export flow.</div>',
+        '</div>',
+        '<div id="rm_board" class="rmBoard noPrint">'+colHtml+'</div>',
+        '<div class="hint" style="margin-top:10px;">(For PDF) Use Export → Current file → PDF, or the Roadmap “Export PDF” button above.</div>',
+      '</div>'
+    ].join("");
+
+    const board = $("rm_board");
+    const titleEl = $("rm_title");
+
+    function rmEnsureHintCleared(col){
+      const hint = col.querySelector(".rmColBody .hint");
+      if(hint) hint.remove();
+    }
+    function rmReindex(){
+      const cols = Array.from(board.querySelectorAll(".rmCol"));
+      cols.forEach((col, i)=>{
+        col.dataset.rmColIndex = String(i);
+        const items = Array.from(col.querySelectorAll(".rmItem"));
+        items.forEach((it, j)=> it.dataset.rmItemIndex = String(j));
+      });
+    }
+
+    function rmAddColumn(title){
+      const el = document.createElement("div");
+      el.className = "rmCol";
+      el.setAttribute("draggable","true");
+      el.dataset.rmCol = "1";
+      el.innerHTML = [
+        '<div class="rmColHead">',
+          '<input type="text" class="rmColTitle" value="'+esc(title||"COLUMN")+'" placeholder="Column title…"/>',
+          '<button class="btn rmMiniBtn danger" data-rm-act="delCol" title="Delete column">Delete</button>',
+        '</div>',
+        '<div class="rmColBody"><div class="hint">No items yet. Add one below.</div></div>',
+        '<div class="rmColFoot">',
+          '<button class="btn rmMiniBtn primary" data-rm-act="addItem">+ Item</button>',
+        '</div>'
+      ].join("");
+      board.appendChild(el);
+      rmReindex();
+      setDirty(true);
+    }
+
+    function rmAddItem(col, text){
+      const body = col.querySelector(".rmColBody");
+      rmEnsureHintCleared(col);
+      const it = document.createElement("div");
+      it.className = "rmItem";
+      it.setAttribute("draggable","true");
+      it.dataset.rmItem = "1";
+      it.innerHTML = [
+        '<span class="rmGrip" title="Drag">⋮⋮</span>',
+        '<span class="rmBullet">•</span>',
+        '<input type="text" class="rmItemText" value="'+esc(text||"")+'" placeholder="Item…"/>',
+        '<button class="btn rmMiniBtn danger" data-rm-act="delItem" title="Delete item">Del</button>',
+      ].join("");
+      body.appendChild(it);
+      rmReindex();
+      setDirty(true);
+      const inp = it.querySelector("input");
+      if(inp){ setTimeout(()=>inp.focus(), 0); setTimeout(()=>inp.select(), 0); }
+    }
+
+    function collectRoadmapFromDom(){
+      if(!titleEl || !board) return null;
+      const cols = Array.from(board.querySelectorAll(".rmCol")).map(col=>{
+        const t = (col.querySelector(".rmColTitle")?.value || "").trim() || "COLUMN";
+        const items = Array.from(col.querySelectorAll(".rmItemText"))
+          .map(i => (i.value || "").trim())
+          .filter(Boolean);
+        return { title: t.slice(0,40), items: items.map(x=>x.slice(0,140)).slice(0,80) };
+      });
+      const title = (titleEl.value || "").trim().slice(0,80) || "Roadmap";
+      return normalizeRoadmapData({ title, columns: cols });
+    }
+
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines){
+      const words = String(text||"").split(/\s+/).filter(Boolean);
+      let line = "";
+      let lines = 0;
+      for(let n=0;n<words.length;n++){
+        const test = line ? (line + " " + words[n]) : words[n];
+        const w = ctx.measureText(test).width;
+        if(w > maxWidth && line){
+          ctx.fillText(line, x, y);
+          y += lineHeight;
+          lines++;
+          if(maxLines && lines>=maxLines) return { y, lines, clipped:true };
+          line = words[n];
+        }else{
+          line = test;
+        }
+      }
+      if(line){
+        ctx.fillText(line, x, y);
+        lines++;
+      }
+      return { y, lines, clipped:false };
+    }
+
+    function roadmapToPngBlob(data, width=1280, height=720){
+      const d2 = normalizeRoadmapData(JSON.parse(JSON.stringify(data||{})));
+      const canvas = document.createElement("canvas");
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = width + "px";
+      canvas.style.height = height + "px";
+      const ctx = canvas.getContext("2d");
+      ctx.scale(dpr, dpr);
+
+      // Background
+      const bg = ctx.createLinearGradient(0, 0, width, height);
+      bg.addColorStop(0, "rgba(10,10,12,1)");
+      bg.addColorStop(1, "rgba(28,28,34,1)");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, width, height);
+
+      // subtle noise
+      ctx.globalAlpha = 0.08;
+      for(let i=0;i<2400;i++){
+        const x = Math.random()*width;
+        const y = Math.random()*height;
+        const s = Math.random()*2 + 0.5;
+        ctx.fillStyle = "rgba(255,255,255,"+(Math.random()*0.25)+")";
+        ctx.fillRect(x,y,s,s);
+      }
+      ctx.globalAlpha = 1;
+
+      // Title
+      const title = (d2.title || "ROADMAP").toUpperCase();
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.font = "900 64px Impact, system-ui, Arial";
+      ctx.fillStyle = "rgba(255,255,255,1)";
+      ctx.strokeStyle = "rgba(0,0,0,0.85)";
+      ctx.lineWidth = 8;
+      const tX = 48, tY = 28;
+      ctx.strokeText(title, tX, tY);
+      ctx.fillText(title, tX, tY);
+
+      // Columns layout
+      const cols = d2.columns.slice(0, 6);
+      const marginX = 48;
+      const topY = 120;
+      const bottomPad = 36;
+      const gap = 26;
+      const colW = Math.floor((width - marginX*2 - gap*(cols.length-1)) / cols.length);
+      const colH = height - topY - bottomPad;
+
+      function roundRect(x,y,w,h,r){
+        ctx.beginPath();
+        ctx.moveTo(x+r, y);
+        ctx.arcTo(x+w, y, x+w, y+h, r);
+        ctx.arcTo(x+w, y+h, x, y+h, r);
+        ctx.arcTo(x, y+h, x, y, r);
+        ctx.arcTo(x, y, x+w, y, r);
+        ctx.closePath();
+      }
+
+      cols.forEach((c, i)=>{
+        const x = marginX + i*(colW + gap);
+        const y = topY;
+
+        // shadow
+        ctx.save();
+        ctx.shadowColor = "rgba(0,0,0,0.5)";
+        ctx.shadowBlur = 22;
+        ctx.shadowOffsetY = 10;
+        ctx.fillStyle = "rgba(0,0,0,0.18)";
+        roundRect(x, y, colW, colH, 16);
+        ctx.fill();
+        ctx.restore();
+
+        // panel
+        ctx.fillStyle = "rgba(255,255,255,0.18)";
+        ctx.strokeStyle = "rgba(255,255,255,0.20)";
+        ctx.lineWidth = 2;
+        roundRect(x, y, colW, colH, 16);
+        ctx.fill();
+        ctx.stroke();
+
+        // header
+        ctx.font = "900 44px Impact, system-ui, Arial";
+        ctx.fillStyle = "rgba(255,255,255,1)";
+        ctx.strokeStyle = "rgba(0,0,0,0.85)";
+        ctx.lineWidth = 7;
+        const hText = String(c.title||"COLUMN").toUpperCase();
+        const hx = x + 22;
+        const hy = y + 18;
+        ctx.strokeText(hText, hx, hy);
+        ctx.fillText(hText, hx, hy);
+
+        // items
+        ctx.font = "800 26px system-ui, Arial";
+        ctx.strokeStyle = "rgba(0,0,0,0.85)";
+        ctx.lineWidth = 5;
+        ctx.fillStyle = "rgba(255,255,255,1)";
+        let iy = y + 88;
+        const ix = x + 22;
+        const maxW = colW - 44;
+        const lineH = 32;
+
+        (c.items||[]).slice(0, 16).forEach((txt)=>{
+          const bullet = "• ";
+          const label = bullet + String(txt||"");
+          // outline + fill (wrap)
+          ctx.save();
+          ctx.fillStyle = "rgba(255,255,255,1)";
+          ctx.strokeStyle = "rgba(0,0,0,0.85)";
+          ctx.lineWidth = 5;
+
+          // wrap manually: draw in chunks without losing outline
+          // We'll do simple: draw outline+fill line-by-line using measure/wrapText with fill only, then redraw outline by repeating fillText w strokeText per line.
+          // For correctness: build wrapped lines first.
+          const words = String(label).split(/\s+/).filter(Boolean);
+          let line = "";
+          const lines = [];
+          for(let n=0;n<words.length;n++){
+            const test = line ? (line + " " + words[n]) : words[n];
+            const w = ctx.measureText(test).width;
+            if(w > maxW && line){
+              lines.push(line);
+              line = words[n];
+            }else line = test;
+          }
+          if(line) lines.push(line);
+
+          const maxLines = 3;
+          const used = lines.slice(0, maxLines);
+          used.forEach((ln)=>{
+            ctx.strokeText(ln, ix, iy);
+            ctx.fillText(ln, ix, iy);
+            iy += lineH;
+          });
+          iy += 10;
+          ctx.restore();
+        });
+      });
+
+      return new Promise((resolve)=> canvas.toBlob(resolve, "image/png"));
+    }
+
+    // wiring
+    titleEl.addEventListener("input", ()=> setDirty(true));
+    board.addEventListener("input", ()=> setDirty(true));
+
+    $("rm_addCol").onclick = ()=> rmAddColumn("COLUMN");
+    $("rm_exportPdf").onclick = ()=> { if(dirty) saveOpenFile(); exportPdf(); };
+
+    $("rm_exportPng").onclick = async ()=>{
+      try{
+        const data = collectRoadmapFromDom();
+        if(!data) return;
+        if(dirty) saveOpenFile();
+        showToast("Building PNG…");
+        const blob = await roadmapToPngBlob(data, 1280, 720);
+        downloadBlob(safeFileName(file.name || data.title || "roadmap") + ".png", blob);
+        showToast("Saved");
+      }catch(e){
+        console.error(e);
+        modalAlert("PNG export failed", (e && e.message) ? e.message : "Could not export PNG.");
+      }
+    };
+
+    board.addEventListener("click", (e)=>{
+      const btn = e.target.closest("[data-rm-act]");
+      if(!btn) return;
+      const act = btn.getAttribute("data-rm-act");
+      const col = btn.closest(".rmCol");
+      if(!col) return;
+
+      if(act === "addItem"){
+        rmAddItem(col, "");
+        return;
+      }
+      if(act === "delItem"){
+        const item = btn.closest(".rmItem");
+        if(item) item.remove();
+        const body = col.querySelector(".rmColBody");
+        if(body && body.querySelectorAll(".rmItem").length===0){
+          body.innerHTML = '<div class="hint">No items yet. Add one below.</div>';
+        }
+        rmReindex();
+        setDirty(true);
+        return;
+      }
+      if(act === "delCol"){
+        col.remove();
+        rmReindex();
+        setDirty(true);
+        return;
+      }
+    });
+
+    // Drag & drop reorder (cols + items)
+    let drag = null;
+
+    board.addEventListener("dragstart", (e)=>{
+      const item = e.target.closest(".rmItem");
+      const col = e.target.closest(".rmCol");
+      if(item && col){
+        drag = { kind:"item", el:item };
+        e.dataTransfer.effectAllowed = "move";
+        return;
+      }
+      if(col){
+        drag = { kind:"col", el:col };
+        e.dataTransfer.effectAllowed = "move";
+      }
+    });
+
+    board.addEventListener("dragover", (e)=>{
+      if(!drag) return;
+      e.preventDefault();
+      const overCol = e.target.closest(".rmCol");
+      const overItem = e.target.closest(".rmItem");
+      if(drag.kind==="col" && overCol){
+        overCol.classList.add("rmDragOver");
+      }
+      if(drag.kind==="item" && overItem){
+        overItem.classList.add("rmDragOver");
+      }
+    });
+
+    board.addEventListener("dragleave", (e)=>{
+      const overCol = e.target.closest(".rmCol");
+      const overItem = e.target.closest(".rmItem");
+      if(overCol) overCol.classList.remove("rmDragOver");
+      if(overItem) overItem.classList.remove("rmDragOver");
+    });
+
+    board.addEventListener("drop", (e)=>{
+      if(!drag) return;
+      e.preventDefault();
+
+      const cols = Array.from(board.querySelectorAll(".rmCol"));
+      cols.forEach(c=>c.classList.remove("rmDragOver"));
+      Array.from(board.querySelectorAll(".rmItem")).forEach(it=>it.classList.remove("rmDragOver"));
+
+      if(drag.kind==="col"){
+        const overCol = e.target.closest(".rmCol");
+        if(overCol && drag.el !== overCol){
+          const rect = overCol.getBoundingClientRect();
+          const after = (e.clientX > rect.left + rect.width/2);
+          if(after) overCol.after(drag.el);
+          else overCol.before(drag.el);
+          rmReindex();
+          setDirty(true);
+        }
+      }else if(drag.kind==="item"){
+        const overItem = e.target.closest(".rmItem");
+        const overCol = e.target.closest(".rmCol");
+        if(overItem && drag.el !== overItem){
+          const rect = overItem.getBoundingClientRect();
+          const after = (e.clientY > rect.top + rect.height/2);
+          if(after) overItem.after(drag.el);
+          else overItem.before(drag.el);
+          rmReindex();
+          setDirty(true);
+        }else if(overCol){
+          const body = overCol.querySelector(".rmColBody");
+          rmEnsureHintCleared(overCol);
+          body.appendChild(drag.el);
+          rmReindex();
+          setDirty(true);
+        }
+      }
+      drag = null;
+    });
+
+    board.addEventListener("dragend", ()=>{
+      drag = null;
+      Array.from(board.querySelectorAll(".rmCol")).forEach(c=>c.classList.remove("rmDragOver"));
+      Array.from(board.querySelectorAll(".rmItem")).forEach(it=>it.classList.remove("rmDragOver"));
+    });
+
+    rmReindex();
+  }
+
   async function renderPdfPage(file){
     ui.pageBody.innerHTML = [
       '<div class="docPage">',
@@ -1978,6 +2601,21 @@
       d.shots = $("c_shots") ? $("c_shots").value : "";
       d.thumb = $("c_thumb") ? $("c_thumb").value : "";
       d.titles = $("c_titles") ? $("c_titles").value : "";
+    }else if(f.type==="roadmap"){
+      const titleEl = $("rm_title");
+      const board = $("rm_board");
+      if(titleEl && board){
+        const cols = Array.from(board.querySelectorAll(".rmCol")).map(col=>{
+          const t = (col.querySelector(".rmColTitle")?.value || "").trim() || "COLUMN";
+          const items = Array.from(col.querySelectorAll(".rmItemText"))
+            .map(i => (i.value || "").trim())
+            .filter(Boolean);
+          return { title: t.slice(0,40), items: items.map(x=>x.slice(0,140)).slice(0,80) };
+        });
+        f.data = normalizeRoadmapData({ title: (titleEl.value||"Roadmap").trim().slice(0,80), columns: cols });
+      }else{
+        f.data = normalizeRoadmapData(f.data || {});
+      }
     }
 
     f.updatedAt = now();
@@ -2085,6 +2723,30 @@
       name: finalName.slice(0,100),
       createdAt: now(), updatedAt: now(),
       content: "{\n  \n}\n"
+    };
+    state.files.unshift(f);
+    saveState();
+    showToast("Saved");
+    selectedFileId = f.id;
+    openSelectedFile();
+  }
+  async function newRoadmap(){
+    const name = await modalPrompt("New roadmap", "Roadmap name:", "Untitled roadmap", "Roadmap name…");
+    if(!name) return;
+    const f = {
+      id: uid("f"),
+      folderId: activeFolderId,
+      type:"roadmap",
+      name: name.trim().slice(0,90),
+      createdAt: now(), updatedAt: now(),
+      data: {
+        title: name.trim().slice(0,80).toUpperCase(),
+        columns: [
+          { title:"CURRENT", items:[] },
+          { title:"NEXT", items:[] },
+          { title:"FUTURE", items:[] }
+        ]
+      }
     };
     state.files.unshift(f);
     saveState();
@@ -2446,6 +3108,7 @@
   ui.newConceptBtn.onclick = async ()=>{ await newConcept(); closeNew(); };
   ui.newNoteBtn.onclick = async ()=>{ await newNote(); closeNew(); };
   ui.newJsonBtn.onclick = async ()=>{ await newJson(); closeNew(); };
+  ui.newRoadmapBtn.onclick = async ()=>{ await newRoadmap(); closeNew(); };
   ui.newFolderBtn.onclick = async ()=>{ await newFolder(null); closeNew(); };
   ui.newSubFolderBtn.onclick = async ()=>{ await newFolder(activeFolderId); closeNew(); };
 
@@ -2461,6 +3124,9 @@
   ui.openBtn.onclick = ()=>{ openSelectedFile(); closeAllMenus(); };
   ui.saveBtn.onclick = ()=>{ if(openFileId) saveOpenFile(); closeAllMenus(); };
   ui.saveBtn2.onclick = ()=>{ if(openFileId) saveOpenFile(); };
+
+  ui.workbenchFullBtn.onclick = toggleWorkbenchFull;
+  ui.toggleWorkbenchBtn.onclick = toggleWorkbenchFull;
 
   ui.importPdfBtn.onclick = ()=>{ ui.pdfInput.value=""; ui.pdfInput.click(); closeAllMenus(); };
   ui.importFolderBtn.onclick = ()=>{ ui.folderInput.value=""; ui.folderInput.click(); closeAllMenus(); };
@@ -2549,6 +3215,10 @@
     ].join("");
   }
   function buildFileCtx(fileId){
+    const f = getFile(fileId);
+    const extra = (f && f.type==="roadmap")
+      ? [ctxItem("Export roadmap → PNG", "export_rm_png", fileId, "")]
+      : [];
     return [
       ctxItem("Open", "open_file", fileId, "↵"),
       ctxSep(),
@@ -2556,6 +3226,7 @@
       ctxItem("Duplicate", "dup_file", fileId, ""),
       ctxItem("Delete", "del_file", fileId, ""),
       ctxSep(),
+      ...extra,
       ctxItem("Export current → PDF", "export_pdf", fileId, "P"),
     ].join("");
   }
@@ -2581,16 +3252,38 @@
     if(act==="export_pdf"){ exportPdf(); return; }
     if(act==="import_pdfs"){ ui.pdfInput.value=""; ui.pdfInput.click(); return; }
     if(act==="import_folder"){ ui.folderInput.value=""; ui.folderInput.click(); return; }
+
+    if(act==="export_rm_png"){
+      selectedFileId = id;
+      openFileId = id;
+      renderExplorer();
+      // click the button if present
+      const btn = document.getElementById("rm_exportPng");
+      if(btn) btn.click();
+      return;
+    }
   }
 
   document.addEventListener("click", ()=> closeCtxMenu());
   document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeCtxMenu(); });
 
   window.addEventListener("keydown", (e)=>{
-    if(isTypingTarget(document.activeElement)) return;
-
     const isMac = navigator.platform.toLowerCase().includes("mac");
     const mod = isMac ? e.metaKey : e.ctrlKey;
+
+    // allow Ctrl+\ even while typing (safe keybind)
+    if(mod && e.key === "\\"){
+      e.preventDefault();
+      toggleWorkbenchFull();
+      return;
+    }
+    if(e.key==="Escape" && workbenchFull){
+      e.preventDefault();
+      setWorkbenchFull(false);
+      return;
+    }
+
+    if(isTypingTarget(document.activeElement)) return;
 
     if(e.key === "Enter" && !mod && !e.altKey && !e.metaKey){
       if(!ui.landingView.classList.contains("hidden")){
